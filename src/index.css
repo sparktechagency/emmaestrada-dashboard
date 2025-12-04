@@ -1,0 +1,59 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+@import "tailwindcss";
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+@theme {
+  --color-primary: #FF5722;
+  --color-secondary: #FFA070;
+  --color-textColor: #666666;
+  --color-black-200: #9a9a9c;
+  --color-black: #0F0617;
+  --color-red: #ff3b30;
+  --color-red-light: #ffeeee;
+  --color-borderColor: #CF9702;
+
+  --animate-fadeIn: fadeIn 0.3s ease-out;
+  --color-green: #43b75d;
+  --color-yellow: #febc2f;
+  --color-bgColor: #f6fffe;
+  --color-blue: #3781FD;
+  --color-cardBg: #1A0B2E;
+  --color-modalBg: #404040;
+  --color-inputBg: #0A0A0A;
+
+  @base {
+    .cardBorder {
+      @apply border border-white/20;
+    }
+  }
+}
+
+/* scroll bar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #dfdfdf00;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #6b5ecc34;
+  border-radius: 10px;
+}
+
+.gradiantBg {
+  background: linear-gradient(14.48deg, #927500 9.85%, #CDC390 152.9%);
+}
+
+.recharts-tooltip-cursor {
+  fill: rgba(114, 111, 111, 0.2) !important;
+}
