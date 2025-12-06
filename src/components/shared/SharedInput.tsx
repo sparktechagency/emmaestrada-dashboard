@@ -41,24 +41,24 @@ const SharedInput = ({
       rows={rows}
       onChange={onChange}
       required={required}
-      fullWidth={width === "100%"} // auto full width
+      fullWidth={width === "100%"}
       sx={{
         width,
         "& .MuiOutlinedInput-root": {
-          color: color, // ✅ text color
+          color: color,
         },
 
         "& .MuiInputBase-input::placeholder": {
-          color: "#9ca3af", // ✅ placeholder color
+          color: "#9ca3af",
           opacity: 1,
         },
 
         "& .MuiInputLabel-root": {
-          color: "#ccc", // label default
+          color: "#ccc",
         },
 
         "& .MuiInputLabel-root.Mui-focused": {
-          color: "var(--color-black-200)", // label when focused
+          color: "var(--color-black-200)",
         },
 
         "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
@@ -66,12 +66,12 @@ const SharedInput = ({
         },
 
         "&:hover .MuiOutlinedInput-notchedOutline": {
-          borderColor: "var(--color-black-200)", // hover border
+          borderColor: "var(--color-black-200)",
         },
 
         "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
           {
-            borderColor: "var(--color-black-200)", // focused border
+            borderColor: "rgba(255,255,255,0.5)",
           },
 
         ...sx,

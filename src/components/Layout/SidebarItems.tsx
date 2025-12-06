@@ -1,5 +1,5 @@
+import { Music } from "lucide-react";
 import { FaStore } from "react-icons/fa";
-import { GrTransaction } from "react-icons/gr";
 import { IoSettingsOutline } from "react-icons/io5";
 import { LuNotepadText } from "react-icons/lu";
 import { MdOutlineDashboard } from "react-icons/md";
@@ -18,20 +18,14 @@ export const navItems: NavItem[] = [
     icon: <FaStore />,
   },
   {
-    to: "/content-manage",
-    label: "Movie & Series",
-    icon: <FaStore />,
+    to: "/campaigns-list",
+    label: "Campaigns List",
+    icon: <Music />
   },
- 
   {
-    to: "/genres",
-    label: "Genres",
-    icon: <GrTransaction />,
-  },   
-    {
     to: "/all-admin",
     label: "Admin",
     icon: <LuNotepadText />,
-  },  
+  },
   { to: "/settings", label: "Settings", icon: <IoSettingsOutline /> },
 ];

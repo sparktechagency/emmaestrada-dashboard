@@ -12,6 +12,7 @@ import {
   Grid,
 } from "@mui/material";
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
+import SharedInput from "../../shared/SharedInput";
 
 interface AddAdminModalProps {
   editData?: any;
@@ -57,6 +58,7 @@ const AddAdminModal: React.FC<AddAdminModalProps> = ({
     });
   };
 
+
   const handleSubmit = () => {
     if (!values.name || !values.email || !values.role || (!editData && !values.password)) {
       return;
@@ -65,8 +67,20 @@ const AddAdminModal: React.FC<AddAdminModalProps> = ({
     handleClose();
   };
 
+  const handleChange = (key: string, value: string) => {
+    setValues({ ...values, [key]: value });
+  };
+
   return (
-    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm" className="bg-black/70 "
+      PaperProps={{
+        sx: {
+          background: "#121212",
+          color: "white",
+          border: "1px solid rgba(207,151,2,0.7)",
+          borderRadius: 3,
+        },
+      }}>
       <DialogTitle sx={{ fontSize: 20, fontWeight: 600 }}>
         {!editData ? "Add Admin" : "Edit Admin"}
       </DialogTitle>
@@ -76,26 +90,23 @@ const AddAdminModal: React.FC<AddAdminModalProps> = ({
 
           {/* Name */}
           <Grid size={12}>
-            <TextField
-              fullWidth
+            <SharedInput
               label="Name"
+              placeholder="Name"
               value={values.name}
-              onChange={(e) => setValues({ ...values, name: e.target.value })}
-              required
-              InputProps={{ sx: { height: 45 } }}
+              onChange={(e: any) => handleChange("name", e.target.value)}
             />
           </Grid>
 
           {/* Email */}
           <Grid size={12}>
-            <TextField
-              fullWidth
+            <SharedInput
+
               label="Email"
               type="email"
               value={values.email}
-              onChange={(e) => setValues({ ...values, email: e.target.value })}
+              onChange={(e: any) => handleChange("email", e.target.value)}
               required
-              InputProps={{ sx: { height: 45 } }}
             />
           </Grid>
 
@@ -108,11 +119,28 @@ const AddAdminModal: React.FC<AddAdminModalProps> = ({
               value={values.role}
               onChange={(e) => setValues({ ...values, role: e.target.value })}
               required
-              InputProps={{ sx: { height: 45 } }}
-            >
-              <MenuItem value="SUPER_ADMIN">Super Admin</MenuItem>
+              sx={{
+                height: 45,
+                "& .MuiOutlinedInput-root": {
+                  color: "#ffffff",
+                  height: 45,
+                },
+                "& .MuiInputBase-input::placeholder": {
+                  color: "#9ca3af",
+                  opacity: 1,
+                },
+                "& .MuiInputLabel-root": { color: "#ccc" },
+                "& .MuiInputLabel-root.Mui-focused": { color: "var(--color-black-200)" },
+                "& .MuiOutlinedInput-notchedOutline": { borderColor: "#666" },
+                "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "var(--color-black-200)" },
+                "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "var(--color-black-200)",
+                },
+              }}
+            >              
               <MenuItem value="ADMIN">Admin</MenuItem>
             </TextField>
+
           </Grid>
 
           {/* Password (Add Only) */}
@@ -123,25 +151,34 @@ const AddAdminModal: React.FC<AddAdminModalProps> = ({
                 label="Password"
                 type={showPassword ? "text" : "password"}
                 value={values.password}
-                onChange={(e) =>
-                  setValues({ ...values, password: e.target.value })
-                }
+                onChange={(e) => setValues({ ...values, password: e.target.value })}
                 required
+                sx={{
+                  height: 45,
+                  "& .MuiOutlinedInput-root": {
+                    color: "#ffffff",
+                    height: 45,
+                  },
+                  "& .MuiInputBase-input::placeholder": { color: "#9ca3af", opacity: 1 },
+                  "& .MuiInputLabel-root": { color: "#ccc" },
+                  "& .MuiInputLabel-root.Mui-focused": { color: "var(--color-black-200)" },
+                  "& .MuiOutlinedInput-notchedOutline": { borderColor: "#666" },
+                  "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "rgba(255,255,255,0.5)" },
+                  "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "var(--color-black-200)",
+                  },
+                }}
                 InputProps={{
-                  sx: { height: 45 },
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton onClick={() => setShowPassword(!showPassword)}>
-                        {showPassword ? (
-                          <MdOutlineVisibilityOff size={22} />
-                        ) : (
-                          <MdOutlineVisibility size={22} />
-                        )}
+                        {showPassword ? <MdOutlineVisibilityOff size={22} color="white" /> : <MdOutlineVisibility size={22} color="white" />}
                       </IconButton>
                     </InputAdornment>
                   ),
                 }}
               />
+
             </Grid>
           )}
         </Grid>

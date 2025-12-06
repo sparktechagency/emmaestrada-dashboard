@@ -9,11 +9,12 @@ import {
   Typography,
 } from "@mui/material";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaArrowDown } from "react-icons/fa";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBinLine } from "react-icons/ri";
 import SharedModal from "../../shared/SharedModal";
+import SharedInput from "../../shared/SharedInput";
 
 const FAQ = () => {
   const [open, setOpen] = useState(false);
@@ -89,7 +90,7 @@ const FAQ = () => {
             id={`panel-${faq.id}-header`}
           >
             <div className="flex items-center justify-between w-full pr-5">
-              <Typography component="span" sx={{ fontWeight: 600, color: "white"  }}>
+              <Typography component="span" sx={{ fontWeight: 600, color: "white" }}>
                 {faq.question}
               </Typography>
 
@@ -121,7 +122,7 @@ const FAQ = () => {
           open={open}
           handleClose={() => setOpen(false)}
         >
-          <FAQForm faq={selectedFAQ} />
+          <FAQForm faq={selectedFAQ} setOpen={setOpen}/>
         </SharedModal>
       )}
     </Box>
@@ -131,32 +132,50 @@ const FAQ = () => {
 export default FAQ;
 
 // ------------------ FAQ FORM ------------------
-const FAQForm = ({ faq }: { faq?: any }) => {
+const FAQForm = ({ faq, setOpen }: any) => {
 
-  const handleSubmit = (e: any) => {
+   const [values, setValues] = useState({
+    question: "",
+    answer: "",    
+  });
+
+  useEffect(() => {
+    if (faq) {
+      setValues({
+        question: faq.question,
+        answer: faq.answer,
+      });
+    }
+  }, [faq]);
+
+  const handleChange = (key: string, value: string) => {
+    setValues({ ...values, [key]: value });
+  };
+
+  const onSubmit = async (e: any) => {
     e.preventDefault();    
+    console.log("Form submitted:", values);
+    setOpen(false)
   };
 
   return (
     <Box>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={onSubmit}>
         <Grid container spacing={4}>
+
+            <SharedInput
+            label="Question"
+            placeholder="Question"
+            value={values.question}
+            onChange={(e: any) => handleChange("question", e.target.value)}
+          />
           
-            <TextField
-              defaultValue={faq?.question || ""}
-              name="question"
-              label="Question"
-              fullWidth
-              InputProps={{ style: { height: 45 } }}
-            />
-            <TextField
-              defaultValue={faq?.answer || ""}
-              name="answer"
-              label="Answer"
-              fullWidth
-              multiline
-              rows={3}
-            />         
+            <SharedInput
+            label="Answer"
+            placeholder="Answer"
+            value={values.question}
+            onChange={(e: any) => handleChange("question", e.target.value)}
+          />
         </Grid>
         <Button type="submit" variant="contained" color="primary" size="large" sx={{ mt: 3, width: '100%', display: 'block' }}>
           Submit

@@ -1,76 +1,185 @@
-import { Col, Divider, Modal, Row } from "antd";
+import {
+  Avatar,
+  Box,
+  Chip,
+  Divider,
+  Grid,
+  IconButton,
+  Modal,
+  Typography,
+  Paper,
+  Dialog,
+} from "@mui/material";
 import dayjs from "dayjs";
+import CloseIcon from "@mui/icons-material/Close";
 
-const UserDetailsModal = ({ open, data, onClose }:any) => {
 
+
+const UserDetailsModal = ({ open, data, onClose }: any) => {
   return (
-    <Modal
+    <Dialog
       open={open}
-      onCancel={onClose}
-      footer={null}
-      title={
-        <p className="text-xl font-semibold text-primary text-center">
-          User Details
-        </p>
-      }
-      centered
-      width={700}
-    >
-      <Divider style={{ background: "gray" }} />
-      <Row gutter={[12, 24]}>
-        {/* Name */}
-        <Col span={12}>
-          <p className="text-[#808080] text-[15px] font-medium mb-1">Name</p>
-          <p className="text-[15px] font-medium">{data?.name}</p>
-        </Col>
+      onClose={onClose}
+      maxWidth="md"
+      fullWidth
+      className="bg-black/70 "
+      PaperProps={{
+        sx: {
+          // background: "#0E1117",
+          background: "#121212",
+          color: "white",
+          border: "1px solid rgba(207,151,2,0.7)",
+          borderRadius: 3,
+          padding: 3,
+        },
+      }}
+    >      
+        {/* Header */}
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Typography variant="h5" fontWeight={600}>
+            User Details
+          </Typography>
+          <IconButton onClick={onClose}>
+            <CloseIcon />
+          </IconButton>
+        </Box>
 
-        {/* Status */}
-        <Col span={12}>
-          <p className="text-[#808080] text-[15px] font-medium mb-1">Status</p>
-          <span
-            className={`font-semibold text-[15px] ${
-              data?.status?.toLowerCase() === "active" ? "text-green-600" : "text-red-600"
-            }`}
-          >
-            {data?.status}
-          </span>
-        </Col>
+        <Divider sx={{ my: 2 }} />
 
-        {/* Email */}
-        <Col span={12}>
-          <p className="text-[#808080] text-[15px] font-medium mb-1">Email</p>
-          <p className="text-[15px] font-medium">{data?.email}</p>
-        </Col>
-        
+        {/* Profile Section */}
+        <Box display="flex" alignItems="center" gap={2}>
+          <Avatar
+            src={data?.profileImage}
+            alt={data?.name}
+            sx={{ width: 80, height: 80 }}
+          />
+          <Box>
+            <Typography variant="h6" fontWeight={700}>
+              {data?.name}
+            </Typography>
 
-        {/* Role */}
-        <Col span={12}>
-          <p className="text-[#808080] text-[15px] font-medium mb-1">Role</p>
-          <p className="text-[15px] font-medium">{data?.role}</p>
-        </Col>
+            {/* Role Badge */}
+            <Chip
+              label={data?.role}
+              size="small"
+              sx={{
+                mt: 1,
+                background:
+                  data?.role?.toLowerCase() === "artist"
+                    ? "#FDE6FF"
+                    : "#E8F5FF",
+                color:
+                  data?.role?.toLowerCase() === "artist"
+                    ? "#C900C9"
+                    : "#0066C9",
+                fontWeight: 600,
+              }}
+            />
 
-        {/* Join Date */}
-        <Col span={12}>
-          <p className="text-[#808080] text-[15px] font-medium mb-1">
-            Join Date
-          </p>
-          <p className="text-[15px] font-medium">
-            {dayjs(data?.joinDate).format("DD MMMM, YYYY")}
-          </p>
-        </Col>
-        {/* Join Date */}
-        {data?.role?.toLowerCase() == 'artist' && <Col span={12}>
-          <p className="text-[#808080] text-[15px] font-medium mb-1">
-            Followers
-          </p>
-          <p className="text-[15px] text-blue-800 font-bold">
-            {data?.followers}
-          </p>
-        </Col>}
-        
-      </Row>
-    </Modal>
+            {/* Verified Status */}
+            <Chip
+              label={data?.status}
+              size="small"
+              sx={{
+                ml: 1,
+                mt: 1,
+                background:
+                  data?.status?.toLowerCase() === "active"
+                    ? "#E5F8EA"
+                    : "#FFE5E5",
+                color:
+                  data?.status?.toLowerCase() === "active"
+                    ? "#0B8A26"
+                    : "#D10E0E",
+                fontWeight: 600,
+              }}
+            />
+          </Box>
+        </Box>
+
+        {/* User Info */}
+        <Grid container spacing={3} mt={2}>
+          <Grid item xs={12} sm={6}>
+            <Typography color="gray">Email</Typography>
+            <Typography fontWeight={500}>{data?.email}</Typography>
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <Typography color="gray">Join Date</Typography>
+            <Typography fontWeight={500}>
+              {dayjs(data?.joinDate).format("DD MMMM, YYYY")}
+            </Typography>
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <Typography color="gray">Phone</Typography>
+            <Typography fontWeight={500}>{data?.phone ?? "—"}</Typography>
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <Typography color="gray">Location</Typography>
+            <Typography fontWeight={500}>{data?.location ?? "—"}</Typography>
+          </Grid>
+
+          {data?.role?.toLowerCase() === "artist" && (
+            <Grid item xs={12} sm={6}>
+              <Typography color="gray">Followers</Typography>
+              <Typography fontWeight={700} color="primary">
+                {data?.followers}
+              </Typography>
+            </Grid>
+          )}
+        </Grid>
+
+        {/* Social Media */}
+        <Typography mt={4} fontWeight={600}>
+          Social Media
+        </Typography>
+
+        <Grid container spacing={2} mt={1}>
+          <Grid item xs={12} sm={4}>
+            <Typography color="gray">Instagram</Typography>
+            <Typography fontWeight={500}>{data?.instagram ?? "—"}</Typography>
+          </Grid>
+
+          <Grid item xs={12} sm={4}>
+            <Typography color="gray">Tiktok</Typography>
+            <Typography fontWeight={500}>{data?.tiktok ?? "—"}</Typography>
+          </Grid>
+
+          <Grid item xs={12} sm={4}>
+            <Typography color="gray">YouTube</Typography>
+            <Typography fontWeight={500}>{data?.youtube ?? "—"}</Typography>
+          </Grid>
+        </Grid>
+
+        {/* Artist Bio */}
+        {data?.bio && (
+          <>
+            <Typography mt={4} fontWeight={600}>
+              Artist Bio
+            </Typography>
+
+            <Box
+              sx={{
+                background: "rgba(255,255,255,0.05)",
+                p: 2,
+                borderRadius: 2,
+                mt: 1,
+                fontSize: "14px",
+              }}
+            >
+              {data?.bio}
+            </Box>
+          </>
+        )}      
+    </Dialog>
+
   );
 };
 
 export default UserDetailsModal;
+
+
+
+

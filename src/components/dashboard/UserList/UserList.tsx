@@ -16,6 +16,9 @@ import { useState } from "react";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { IoEyeOutline } from "react-icons/io5";
 import { PiUserCircleBold, PiUserSoundBold } from "react-icons/pi"; // Artist icon
+import { toast } from "sonner";
+import ConfirmModal from "../../UI/ConfirmModel";
+import UserDetailsModal from "./UserDetailsModal";
 
 // --------- SAMPLE USER DATA ----------
 
@@ -35,16 +38,28 @@ const StyledRow = styled(TableRow)(() => ({
 }));
 
 // ---------------- USER LIST COMPONENT ----------------
-const UsersList = ({
-  search,
-  setOpenDetails,
-  setOpenConfirmModal,
-  setSelectedUser,
-}: any) => {
+const UsersList = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [openDetails, setOpenDetails] = useState(false);
+  const [openConfirmModal, setOpenConfirmModal] = useState(false)
 
+  const handleDeleteAdmin = async () => {
+    try {
+      // const res = await deleteUser(selectedUser._id).unwrap();
+
+      // console.log("delete", res);
+      toast.success("Admin deleted successfully");
+      // refetch();
+      setSelectedUser(null);
+      setOpenConfirmModal(false);
+    } catch (error: any) {
+      console.log("delete error", error);
+      toast.error(error?.data?.message || "Failed to delete admin");
+    }
+  };
   return (
     <TableContainer component={Paper} className="bg-transparent!">
       <Table sx={{ minWidth: 650, background: "var(--color-cardBg)" }}>
@@ -121,7 +136,7 @@ const UsersList = ({
                   <div style={{ opacity: 0.7, fontSize: 14 }}>
                     {row.statsLabel}
                   </div>
-                  <div style={{ fontWeight: 600 }}>{row.statsValue}</div>
+                  <div style={{ fontWeight: 600, color: "var(--color-primary)" }}>{row.statsValue}</div>
                 </TableCell>
 
                 {/* ACTION ICONS */}
@@ -137,7 +152,7 @@ const UsersList = ({
                     <IoEyeOutline
                       size={20}
                       className="text-blue-400 cursor-pointer"
-                      onClick={() => setOpenDetails(true)}
+                    onClick={() => {setOpenDetails(true); setSelectedUser(row)}}
                     />
 
                     <FaEdit
@@ -160,7 +175,8 @@ const UsersList = ({
         </TableBody>
       </Table>
 
-      {/* <TablePagination
+      {/* 
+      <TablePagination
         component="div"
         count={usersData.length}
         rowsPerPage={rowsPerPage}
@@ -171,35 +187,79 @@ const UsersList = ({
           setPage(0);
         }}
         sx={{ background: "var(--color-cardBg)", color: "#ededed" }}
-      /> */}
+      />
+      */}
 
-      <Stack alignItems="center" mt={4} color="white">
+      <Stack alignItems="center" mt={4} color="white" >
         <Pagination
-          sx={{
+          sx={{            
             "& .MuiPaginationItem-text": {
-              color: "rgba(255,255,255,.3)",          // icon color
+              color: "rgba(255,255,255,.3)",
               border: "1px solid rgba(255,255,255,.3)",
             },
             "& .MuiPaginationItem-previousNext": {
-              color: "#F39C12",          // icon color
+              color: "#F39C12",
               border: "1px solid #F39C12",
             },
             "& .MuiPaginationItem-previousNext:hover": {
               backgroundColor: "rgba(243,156,18,0.15)",
             },
           }}
-          count={Math.ceil(usersData?.length / rowsPerPage)} // total pages
-          page={page + 1}                                      // MUI starts pages from 1
-          onChange={(_, value) => setPage(value - 1)}          // convert back to 0-based
+          count={Math.ceil(usersData?.length / rowsPerPage)}
+          page={page + 1}
+          onChange={(_, value) => setPage(value - 1)}
           color="primary"
         />
       </Stack>
+
+      <UserDetailsModal open={openDetails} data={demoUser} onClose={()=>{setOpenDetails(false); setSelectedUser(null)}} />
+
+      <ConfirmModal
+        open={openConfirmModal}
+        title={`Delete ${selectedUser?.name}"`}
+        content={`Are you sure you want to delete "${selectedUser?.name}"?`}
+        okText="Yes, Delete"
+        cancelText="Cancel"
+        onConfirm={handleDeleteAdmin}
+        onCancel={() => {
+          setOpenConfirmModal(false);
+          setSelectedUser(null);
+        }}
+      />
     </TableContainer>
   );
 };
 
 export default UsersList;
 
+
+const demoUser = {
+  id: "USR-2025-001",
+  name: "Luna Rivers",
+  email: "user@musicflow.com",
+  phone: "+1 (555) 123-4567",
+  location: "Los Angeles, CA",
+  role: "Artist",
+  status: "Active",
+  joinDate: "2024-06-15",
+
+  profileImage:
+    "https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=400&q=80",
+
+  verified: true,
+  primaryGenre: "Pop",
+
+  social: {
+    instagram: "@musicflow",
+    tiktok: "@jadakahop",
+    youtube: "Luna Rivers",
+  },
+
+  followers: 1280000,
+
+  bio: `Pop artist with a passion for creating catchy melodies and meaningful lyrics. 
+Known for chart-topping hits and energetic live performances.`,
+};
 
 const usersData = [
   {

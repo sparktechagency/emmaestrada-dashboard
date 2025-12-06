@@ -8,25 +8,17 @@ import MainLayout from "../Layout/MainLayout";
 import ErrorPage from "../UI/ErrorPage";
 import { Dashboard } from "../dashboard/Dashboard/Dashboard";
 
-import BookingManage from "../dashboard/BookingManage/BookingManage";
-import CarManage from "../dashboard/CarManage/CarManage";
-import GuestsManage from "../dashboard/GuestsManage/GuestsManage";
-import HostRequest from "../dashboard/HostRequest/HostRequest";
-import HostsManage from "../dashboard/HostsManage/HostsManage";
-import Payments from "../dashboard/Payments/Payments";
-import Settings from "../dashboard/Settings/Settings";
-import Verification from "../dashboard/Verification/Verification";
 import Notifications from "../dashboard/Notifications/Notifications";
 import AdminList from "../dashboard/AdminList/AdminList";
-import MovieSeriesManage from "../dashboard/MovieSeriesManage/MovieSeriesManage";
 import Genres from "../dashboard/Genres/Genres";
 import UserList from "../dashboard/UserList/UserList";
+import CampaignsList from "../dashboard/CampaignsList/CampaignsList";
+import Settings from "../dashboard/Settings/Settings";
 
 
 const router = createBrowserRouter([
     {
         path: "/",
-        // element: <PrivateRoute> <MainLayout /> </PrivateRoute>,
         element: <MainLayout />,
         errorElement: <ErrorPage />,
         children: [
@@ -38,7 +30,6 @@ const router = createBrowserRouter([
                 path: "dashboard",
                 element: <Dashboard />
             },
-            
             {
                 path: "notifications",
                 element: <Notifications />
@@ -48,18 +39,14 @@ const router = createBrowserRouter([
                 element: <UserList />
             },                              
             {
-                path: "content-manage",
-                element: <MovieSeriesManage />
-            },                              
+                path: "campaigns-list",
+                element: <CampaignsList />
+            },                                                                       
             {
                 path: "genres",
                 element: <Genres />
             },                              
-            {
-                path: "verification",
-                element: <Verification />
-            },
-         
+           
             {
                 path: "settings",
                 element: <Settings />
@@ -68,27 +55,6 @@ const router = createBrowserRouter([
                 path: "all-admin",
                 element: <AdminList />
             },
-            // {
-            //     path: "terms-condition",
-            //     element: <TermsCondition />
-            // },
-
-            // {
-            //     path: "about",
-            //     element: <About/>
-            // },
-            // {
-            //     path: "faq",
-            //     element: <FAQ/>
-            // },
-            // {
-            //     path: "policy",
-            //     element: <PrivacyPolicy/>
-            // },
-            // {
-            //     path: "policy",
-            //     element: <PrivacyPolicy/>
-            // },
         ]
     },
     {path: "/login", element: <Login />},
@@ -96,7 +62,5 @@ const router = createBrowserRouter([
     {path: "/verify-otp", element: <OTPVerify />},
     {path: "/new-password", element: <NewPassword />},
 ]);
-
-
 
 export default router;
