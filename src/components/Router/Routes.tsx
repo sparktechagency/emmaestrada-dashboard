@@ -16,6 +16,8 @@ import Settings from "../dashboard/Settings/Settings";
 import CommissionManage from "../dashboard/CommissionManage/CommissionManage";
 import CategoryManage from "../dashboard/CategoryManage/CategoryManage";
 import PrivateRoute from "./PrivateRoute";
+import SliderManage from "../dashboard/SlidersManage/SlidersManage";
+
 
 
 const router = createBrowserRouter([
@@ -41,6 +43,10 @@ const router = createBrowserRouter([
                 path: "users",
                 element: <UserList />
             },                              
+            {
+                path: "sliders-manage",
+                element: <SliderManage />
+            },                                                                                  
             {
                 path: "category-manage",
                 element: <CategoryManage />
