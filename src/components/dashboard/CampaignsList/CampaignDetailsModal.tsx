@@ -1,4 +1,4 @@
-import { AttachMoney, CalendarMonth, Close } from "@mui/icons-material";
+import { CalendarMonth, Close } from "@mui/icons-material";
 import {
     Avatar,
     Box,
@@ -214,10 +214,10 @@ const CampaignDetailsModal = ({ open, onClose, data }: any) => {
                                 borderRadius: 2,
                             }}
                         >
-                            <AttachMoney sx={{ color: "var(--color-primary)", mb: 1 }} />
+                            
                             <Typography color="gray.300">Campaign Amount</Typography>
-                            <Typography fontWeight={700} fontSize={18}>
-                                ${data.campaignAmount || 0}
+                            <Typography fontWeight={700} fontSize={22} color="var(--color-secondary)">
+                                $ {data.campaignAmount || 0}
                             </Typography>
                         </Box>
                     </Grid>
@@ -231,10 +231,10 @@ const CampaignDetailsModal = ({ open, onClose, data }: any) => {
                                 borderRadius: 2,
                             }}
                         >
-                            <AttachMoney sx={{ color: "#4CAF50", mb: 1 }} />
+                            
                             <Typography color="gray.300">Paid Amount</Typography>
-                            <Typography fontWeight={700} fontSize={18}>
-                                ${data.paidAmount || 0}
+                            <Typography fontWeight={700} fontSize={22} color="var(--color-secondary)">
+                                $ {data.paidAmount || 0}
                             </Typography>
                         </Box>
                     </Grid>
@@ -248,10 +248,10 @@ const CampaignDetailsModal = ({ open, onClose, data }: any) => {
                                 borderRadius: 2,
                             }}
                         >
-                            <AttachMoney sx={{ color: "#FF9800", mb: 1 }} />
+                            
                             <Typography color="gray.300">Remaining</Typography>
-                            <Typography fontWeight={700} fontSize={18}>
-                                ${data.remainingAmount || 0}
+                            <Typography fontWeight={700} fontSize={22} color="var(--color-secondary)">
+                                $ {data.remainingAmount || 0}
                             </Typography>
                         </Box>
                     </Grid>
@@ -266,8 +266,8 @@ const CampaignDetailsModal = ({ open, onClose, data }: any) => {
                             }}
                         >
                             <Typography color="gray.300">Platform Fee</Typography>
-                            <Typography fontWeight={700} fontSize={18}>
-                                {data.platformFee}%
+                            <Typography fontWeight={700} fontSize={22} color="var(--color-secondary)">
+                                $ {data.platformFee}%
                             </Typography>
                         </Box>
                     </Grid>

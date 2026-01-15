@@ -47,6 +47,9 @@ const SharedInput = ({
         "& .MuiOutlinedInput-root": {
           color: color,
         },
+        "& .MuiOutlinedInput-root:.Mui-focused": {
+            borderColor: "rgba(255,255,255,0.5)",
+        },
 
         "& .MuiInputBase-input::placeholder": {
           color: "#9ca3af",

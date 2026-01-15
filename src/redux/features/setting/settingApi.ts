@@ -73,6 +73,20 @@ const settingApi = baseApi.injectEndpoints({
       query: () => "/contact-info",
       transformResponse: (res: { data: any }) => res?.data,
     }),
+    // ---------------- Commission Manage  Start---------------
+    getCommission: builder.query({
+      query: () => "/platform/get-platform-fees",
+      transformResponse: (res: { data: any }) => res?.data,
+    }),
+    updateCommission: builder.mutation({      
+        query: (data) => ({
+          url: `/platform/update-platform-fee/${data?.id}`,
+          method: "PUT",
+          body: data,
+        }),
+    }),
+
+    // ---------------- Commission Manage  End---------------
 
     getNotification: builder.query({
       query: () => "/reports",
@@ -81,6 +95,8 @@ const settingApi = baseApi.injectEndpoints({
   }),
 });
 
+
+
 export const {
   useGetFAQQuery,
   useGetAboutQuery,
@@ -88,6 +104,9 @@ export const {
 
   useGetSupportQuery,
   useAddSupportMutation,
+
+  useGetCommissionQuery,
+  useUpdateCommissionMutation,
 
   useAddAboutMutation,
   useAddFAQMutation,
