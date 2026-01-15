@@ -11,12 +11,17 @@ import {
   TableHead,
   TableRow
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import { FaTrashAlt } from "react-icons/fa";
+import { LockKeyhole, LockKeyholeOpen } from "lucide-react";
 import { IoEyeOutline } from "react-icons/io5";
 import { PiUserCircleBold, PiUserSoundBold } from "react-icons/pi"; // Artist icon
 import { toast } from "sonner";
+import { imageUrl } from "../../../redux/base/baseAPI";
+import { useGetUsersQuery, useUpdateUserMutation } from "../../../redux/features/user/userApi";
+import { getSearchParams } from "../../../utils/getSearchParams";
+import { useUpdateSearchParams } from "../../../utils/updateSearchParams";
+import { FormatDate } from "../../shared/FormatDate";
 import ConfirmModal from "../../UI/ConfirmModel";
 import UserDetailsModal from "./UserDetailsModal";
 
@@ -39,12 +44,36 @@ const StyledRow = styled(TableRow)(() => ({
 
 // ---------------- USER LIST COMPONENT ----------------
 const UsersList = () => {
-  const [page, setPage] = useState(0);
-  const [rowsPerPage] = useState(10);
-
+  const { page } = getSearchParams();
+  const updateSearchParams = useUpdateSearchParams();
+  // @ts-ignore
+  const [currentPage, setCurrentPage] = useState(Math.max(1, page || 1));
   const [selectedUser, setSelectedUser] = useState(null);
   const [openDetails, setOpenDetails] = useState(false);
-  const [openConfirmModal, setOpenConfirmModal] = useState(false)
+  const [openConfirmModal, setOpenConfirmModal] = useState(false);
+  const { data: usersData, refetch } = useGetUsersQuery({});
+  const [updateUser] = useUpdateUserMutation()
+
+  useEffect(() => {
+    // @ts-ignore
+    const urlPage = Math.max(1, page || 1);
+    setCurrentPage(urlPage);
+    refetch();
+  }, [page, refetch]);
+
+  const handleChangePage = (__event: unknown, newPage: number) => {
+    setCurrentPage(newPage);
+    updateSearchParams({ page: newPage });
+  };
+
+  const handleToggleStatusPage = async (status: string, id: string) => {
+    try {
+      await updateUser({ status, id }).unwrap();
+      refetch();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleDeleteAdmin = async () => {
     try {
@@ -67,129 +96,109 @@ const UsersList = () => {
           <StyledRow>
             <StyledHeadCell>User</StyledHeadCell>
             <StyledHeadCell>Role</StyledHeadCell>
-            <StyledHeadCell>Status</StyledHeadCell>
             <StyledHeadCell>Join Date</StyledHeadCell>
-            <StyledHeadCell>Stats</StyledHeadCell>
+            <StyledHeadCell>Status</StyledHeadCell>
             <StyledHeadCell>Actions</StyledHeadCell>
           </StyledRow>
         </TableHead>
 
         <TableBody>
-          {usersData?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            .map((row: any, index: number) => (
-              <StyledRow key={index}>
-                {/* USER: Avatar + Name + Email*/}
-                <TableCell sx={{ color: "white" }}>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                    <img
-                      src={row.avatar}
-                      alt={row.name}
-                      style={{
-                        width: 45,
-                        height: 45,
-                        borderRadius: "50%",
-                        objectFit: "cover",
-                      }}
-                    />
-
-                    <Box>
-                      <p style={{ fontWeight: 600 }}>{row.name}</p>
-                      <p style={{ fontSize: 13, opacity: 0.7 }}>{row.email}</p>
-                    </Box>
-                  </Box>
-                </TableCell>
-
-                {/* ROLE */}
-                <TableCell sx={{ color: "white" }}>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    {row.role === "Artist" ? (
-                      <PiUserSoundBold size={18} color="#ff6b35" />
-                    ) : (
-                      <PiUserCircleBold size={18} color="#ff6b35" />
-                    )}
-                    {row.role}
-                  </Box>
-                </TableCell>
-
-                {/* STATUS */}
-                <TableCell>
-                  <span
+          {usersData?.data && usersData?.data?.map((row: any, index: number) => (
+            <StyledRow key={index}>
+              {/* USER: Avatar + Name + Email*/}
+              <TableCell sx={{ color: "white" }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                  <img
+                    src={`${imageUrl + row.image}`}
+                    alt={row.name}
                     style={{
-                      backgroundColor:
-                        row.status === "Active" ? "#E6F7E6" : "#4a4d52",
-                      color: row.status === "Active" ? "#2E7D32" : "#d5d7da",
-                      padding: "5px 15px",
-                      borderRadius: 20,
-                      fontWeight: 600,
-                      fontSize: 13,
+                      width: 45,
+                      height: 45,
+                      borderRadius: "50%",
+                      objectFit: "cover",
                     }}
-                  >
-                    {row.status}
-                  </span>
-                </TableCell>
+                  />
 
-                {/* JOIN DATE */}
-                <TableCell sx={{ color: "white" }}>{row.joinDate}</TableCell>
-
-                {/* STATS */}
-                <TableCell sx={{ color: "white" }}>
-                  <div style={{ opacity: 0.7, fontSize: 14 }}>
-                    {row.statsLabel}
-                  </div>
-                  <div style={{ fontWeight: 600, color: "var(--color-primary)" }}>{row.statsValue}</div>
-                </TableCell>
-
-                {/* ACTION ICONS */}
-                <TableCell>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: 2,
-                    }}
-                  >
-                    <IoEyeOutline
-                      size={20}
-                      className="text-blue-400 cursor-pointer"
-                    onClick={() => {setOpenDetails(true); setSelectedUser(row)}}
-                    />                
-                    <FaTrashAlt
-                      size={18}
-                      className="text-red-500 cursor-pointer"
-                      onClick={() => {
-                        setOpenConfirmModal(true);
-                        setSelectedUser(row);
-                      }}
-                    />
+                  <Box>
+                    <p style={{ fontWeight: 600 }}>{row.name}</p>
+                    <p style={{ fontSize: 13, opacity: 0.7 }}>{row.email}</p>
                   </Box>
-                </TableCell>
-              </StyledRow>
-            ))}
+                </Box>
+              </TableCell>
+
+              {/* ROLE */}
+              <TableCell sx={{ color: "white" }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  {row.role === "Artist" ? (
+                    <PiUserSoundBold size={18} color="#ff6b35" />
+                  ) : (
+                    <PiUserCircleBold size={18} color="#ff6b35" />
+                  )}
+                  {row.role}
+                </Box>
+              </TableCell>
+
+
+
+              {/* JOIN DATE */}
+              <TableCell sx={{ color: "white" }}>{FormatDate(row.createdAt)}</TableCell>
+              {/* STATUS */}
+              <TableCell>
+                <span
+                  style={{
+                    backgroundColor:
+                      row.status === "active" ? "#E6F7E6" : "#4a4d52",
+                    color: row.status === "active" ? "#2E7D32" : "#d5d7da",
+                    padding: "5px 15px",
+                    borderRadius: 20,
+                    fontWeight: 600,
+                    fontSize: 13,
+                  }}
+                >
+                  {row.status}
+                </span>
+              </TableCell>
+
+              {/* ACTION ICONS */}
+              <TableCell>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 2,
+                  }}
+                >
+                  <IoEyeOutline
+                    size={20}
+                    className="text-blue-400 cursor-pointer"
+                    onClick={() => { setOpenDetails(true); setSelectedUser(row) }}
+                  />
+                  {row.status === "active" ?
+                    <LockKeyhole size={20}
+                      className="text-red-400 cursor-pointer"
+                      onClick={() => { handleToggleStatusPage("blocked", row?._id) }} />
+                    : <LockKeyholeOpen className="text-green-400 cursor-pointer"
+                      onClick={() => { handleToggleStatusPage("active", row?._id) }} />}
+                </Box>
+              </TableCell>
+            </StyledRow>
+          ))}
         </TableBody>
       </Table>
 
-      {/* 
-      <TablePagination
-        component="div"
-        count={usersData.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={(e, newPage) => setPage(newPage)}
-        onRowsPerPageChange={(e) => {
-          setRowsPerPage(parseInt(e.target.value));
-          setPage(0);
-        }}
-        sx={{ background: "var(--color-cardBg)", color: "#ededed" }}
-      />
-      */}
-
-      <Stack alignItems="center" mt={4} color="white" >
+      <Stack alignItems="center" mt={4} color="white">
         <Pagination
-          sx={{            
+          sx={{
+            backgroundColor: "transparent",
             "& .MuiPaginationItem-text": {
               color: "rgba(255,255,255,.3)",
               border: "1px solid rgba(255,255,255,.3)",
+            },
+            "& .Mui-selected": {
+              backgroundColor: "#F39C12 !important",
+              color: "#000 !important",
+              border: "1px solid #F39C12",
             },
             "& .MuiPaginationItem-previousNext": {
               color: "#F39C12",
@@ -199,14 +208,14 @@ const UsersList = () => {
               backgroundColor: "rgba(243,156,18,0.15)",
             },
           }}
-          count={Math.ceil(usersData?.length / rowsPerPage)}
-          page={page + 1}
-          onChange={(_, value) => setPage(value - 1)}
+          count={Math.ceil(usersData?.meta?.total / usersData?.meta?.limit)}
+          page={currentPage}
+          onChange={handleChangePage}
           color="primary"
         />
       </Stack>
 
-      <UserDetailsModal open={openDetails} data={demoUser} onClose={()=>{setOpenDetails(false); setSelectedUser(null)}} />
+      <UserDetailsModal open={openDetails} userId={(selectedUser as any)?._id} onClose={() => { setOpenDetails(false); setSelectedUser(null) }} />
 
       <ConfirmModal
         open={openConfirmModal}
@@ -225,95 +234,3 @@ const UsersList = () => {
 };
 
 export default UsersList;
-
-
-const demoUser = {
-  id: "USR-2025-001",
-  name: "Luna Rivers",
-  email: "user@musicflow.com",
-  phone: "+1 (555) 123-4567",
-  location: "Los Angeles, CA",
-  role: "Artist",
-  status: "Active",
-  joinDate: "2024-06-15",
-
-  profileImage:
-    "https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=400&q=80",
-
-  verified: true,
-  primaryGenre: "Pop",
-
-  social: {
-    instagram: "@musicflow",
-    tiktok: "@jadakahop",
-    youtube: "Luna Rivers",
-  },
-
-  followers: 1280000,
-
-  bio: `Pop artist with a passion for creating catchy melodies and meaningful lyrics. 
-Known for chart-topping hits and energetic live performances.`,
-};
-
-const usersData = [
-  {
-    avatar: "/profile14.jpg",
-    name: "DJ Sunset",
-    email: "dj.sunset@email.com",
-    role: "Artist",
-    joinDate: "2024-01-15",
-    status: "Active",
-    statsLabel: "12 campaigns",
-    statsValue: "$45,000",
-  },
-  {
-    avatar: "/profile14.jpg",
-    name: "Sarah Johnson",
-    email: "sarah.j@email.com",
-    role: "Influencer",
-    joinDate: "2024-02-20",
-    status: "Active",
-    statsLabel: "28 requests",
-    statsValue: "125K • 8.5%",
-  },
-  {
-    avatar: "/profile14.jpg",
-    name: "The Midnight Band",
-    email: "midnight@email.com",
-    role: "Artist",
-    joinDate: "2024-01-10",
-    status: "Active",
-    statsLabel: "8 campaigns",
-    statsValue: "$38,000",
-  },
-  {
-    avatar: "/profile14.jpg",
-    name: "Mike Chen",
-    email: "mike.chen@email.com",
-    role: "Influencer",
-    joinDate: "2024-03-05",
-    status: "Active",
-    statsLabel: "34 requests",
-    statsValue: "250K • 12.3%",
-  },
-  {
-    avatar: "/profile14.jpg",
-    name: "Emma Davis",
-    email: "emma.d@email.com",
-    role: "Influencer",
-    joinDate: "2024-02-28",
-    status: "Inactive",
-    statsLabel: "15 requests",
-    statsValue: "85K • 6.8%",
-  },
-  {
-    avatar: "/profile14.jpg",
-    name: "Rising Star",
-    email: "risingstar@email.com",
-    role: "Artist",
-    joinDate: "2024-01-20",
-    status: "Active",
-    statsLabel: "15 campaigns",
-    statsValue: "$32,000",
-  },
-];

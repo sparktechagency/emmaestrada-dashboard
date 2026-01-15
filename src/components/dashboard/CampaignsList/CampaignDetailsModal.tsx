@@ -1,23 +1,47 @@
+import { AttachMoney, CalendarMonth, Close } from "@mui/icons-material";
 import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogActions,
-  IconButton,
-  Box,
-  Typography,
-  Divider,
-  Avatar,
-  Grid,
-  Chip,
-  Button,
+    Avatar,
+    Box,
+    Button,
+    Chip,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Divider,
+    Grid,
+    IconButton,
+    Typography,
 } from "@mui/material";
-import { Close } from "@mui/icons-material";
-import { CalendarMonth, Groups, AttachMoney, GridView } from "@mui/icons-material";
+import { imageUrl } from "../../../redux/base/baseAPI";
 
 
 const CampaignDetailsModal = ({ open, onClose, data }: any) => {
     if (!data) return null;
+
+    const formatDate = (dateString: string) => {
+        if (!dateString) return 'N/A';
+        return new Date(dateString).toLocaleDateString('en-US', {
+            month: '2-digit',
+            day: '2-digit',
+            year: 'numeric'
+        });
+    };
+
+    const getStatusColor = (status: string) => {
+        switch (status?.toLowerCase()) {
+            case 'active':
+                return { bg: '#E6F7E6', color: '#2E7D32' };
+            case 'inactive':
+                return { bg: '#FFE6E6', color: '#D32F2F' };
+            case 'completed':
+                return { bg: '#E3F2FD', color: '#1976D2' };
+            default:
+                return { bg: '#F5F5F5', color: '#616161' };
+        }
+    };
+
+    const statusColors = getStatusColor(data.status);
 
     return (
         <Dialog
@@ -25,9 +49,9 @@ const CampaignDetailsModal = ({ open, onClose, data }: any) => {
             onClose={onClose}
             maxWidth="md"
             fullWidth
-            className="bg-black/70 "
+            className="bg-black/70"
             PaperProps={{
-                sx: {                    
+                sx: {
                     background: "#121212",
                     color: "white",
                     border: "1px solid rgba(207,151,2,0.7)",
@@ -60,9 +84,12 @@ const CampaignDetailsModal = ({ open, onClose, data }: any) => {
                     }}
                 >
                     <img
-                        src={data.thumbnail}
+                        src={data.thumbnail ? `${imageUrl}${data.thumbnail}` : '/campaign-img.png'}
                         alt="thumbnail"
                         style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                        onError={(e: any) => {
+                            e.target.src = '/campaign-img.png';
+                        }}
                     />
                 </Box>
 
@@ -72,18 +99,33 @@ const CampaignDetailsModal = ({ open, onClose, data }: any) => {
                 </Typography>
 
                 <Grid container spacing={3}>
-                    <Grid size={{ xs: 12, md: 6 }}>
-                        <Typography color="gray.300">Campaign Name</Typography>
-                        <Typography fontWeight={600}>{data.name}</Typography>
+                    <Grid size={{xs: 12, md: 6}}>
+                        <Typography color="gray.300">Campaign Title</Typography>
+                        <Typography fontWeight={600}>{data.title || 'N/A'}</Typography>
                     </Grid>
 
-                    <Grid size={{ xs: 12, md: 6 }}>
+                    <Grid size={{xs: 12, md: 6}}>
+                        <Typography color="gray.300">Content Type</Typography>
+                        <Typography fontWeight={600}>{data.contentType || 'N/A'}</Typography>
+                    </Grid>
+
+                    <Grid size={{xs: 12, md: 6}}>
+                        <Typography color="gray.300">Category</Typography>
+                        <Typography fontWeight={600}>{data.category || 'N/A'}</Typography>
+                    </Grid>
+
+                    <Grid size={{xs: 12, md: 6}}>
+                        <Typography color="gray.300">Genre</Typography>
+                        <Typography fontWeight={600}>{data.genre || 'N/A'}</Typography>
+                    </Grid>
+
+                    <Grid size={{xs: 12, md: 6}}>
                         <Typography color="gray.300">Platforms</Typography>
-                        <Box display="flex" gap={1} mt={1}>
+                        <Box display="flex" gap={1} mt={1} flexWrap="wrap">
                             {data.platforms?.map((p: string, i: number) => (
                                 <img
                                     key={i}
-                                    src={`/${p}.png`}
+                                    src={`/${p.toLowerCase()}.png`}
                                     alt={p}
                                     style={{
                                         width: 28,
@@ -92,29 +134,44 @@ const CampaignDetailsModal = ({ open, onClose, data }: any) => {
                                         padding: 4,
                                         borderRadius: 6,
                                     }}
+                                    onError={(e: any) => {
+                                        e.target.style.display = 'none';
+                                    }}
                                 />
                             ))}
                         </Box>
                     </Grid>
 
-                    <Grid size={{ xs: 12, md: 6 }}>
-                        <Typography color="gray.300">Duration</Typography>
+                    <Grid size={{xs: 12, md: 6}}>
+                        <Typography color="gray.300">Created Date</Typography>
                         <Box display="flex" alignItems="center" gap={1} mt={0.5}>
                             <CalendarMonth sx={{ fontSize: 18, color: "#CF9702" }} />
-                            <Typography>
-                                {data.start} → {data.end}
-                            </Typography>
+                            <Typography>{formatDate(data.createdAt)}</Typography>
                         </Box>
                     </Grid>
 
-                    <Grid size={{ xs: 12, md: 6 }}>
+                    <Grid size={{xs: 12, md: 6}}>
                         <Typography color="gray.300">Status</Typography>
                         <Chip
                             label={data.status}
                             sx={{
                                 mt: 1,
-                                background: data.status === "Active" ? "#E6F7E6" : "#FFE6E6",
-                                color: data.status === "Active" ? "#2E7D32" : "#D32F2F",
+                                background: statusColors.bg,
+                                color: statusColors.color,
+                                fontWeight: 600,
+                                textTransform: 'capitalize'
+                            }}
+                        />
+                    </Grid>
+
+                    <Grid size={{xs: 12, md: 6}}>
+                        <Typography color="gray.300">Active Status</Typography>
+                        <Chip
+                            label={data.isActive ? 'Active' : 'Inactive'}
+                            sx={{
+                                mt: 1,
+                                background: data.isActive ? '#E6F7E6' : '#FFE6E6',
+                                color: data.isActive ? '#2E7D32' : '#D32F2F',
                                 fontWeight: 600,
                             }}
                         />
@@ -130,25 +187,25 @@ const CampaignDetailsModal = ({ open, onClose, data }: any) => {
 
                 <Box display="flex" alignItems="center" gap={2}>
                     <Avatar
-                        src={data.ownerPic}
+                        src={data.userId?.image ? `${imageUrl}${data.userId.image}` : '/profile14.jpg'}
                         sx={{ width: 60, height: 60, border: "2px solid rgba(255,255,255,0.2)" }}
                     />
-
                     <Box>
-                        <Typography fontWeight={700}>{data.owner}</Typography>
-                        <Typography color="gray.400">@{data.username}</Typography>
+                        <Typography fontWeight={700}>{data.userId?.name || 'Unknown'}</Typography>
+                        <Typography color="gray.400">@{data.userId?.userName || 'N/A'}</Typography>
+                        <Typography color="gray.500" fontSize={12}>{data.userId?.email || 'N/A'}</Typography>
                     </Box>
                 </Box>
 
                 <Divider sx={{ my: 3, borderColor: "rgba(255,255,255,0.1)" }} />
 
-                {/* Budget & influencers */}
+                {/* Budget & Payment */}
                 <Typography variant="h6" sx={{ color: "var(--color-primary)", mb: 2 }}>
-                    Performance & Budget
+                    Budget & Payment Information
                 </Typography>
 
                 <Grid container spacing={3}>
-                    <Grid size={{ xs: 12, md: 6 }}>
+                    <Grid size={{xs: 12, md: 6}}>
                         <Box
                             sx={{
                                 background: "rgba(255,255,255,0.05)",
@@ -158,14 +215,14 @@ const CampaignDetailsModal = ({ open, onClose, data }: any) => {
                             }}
                         >
                             <AttachMoney sx={{ color: "var(--color-primary)", mb: 1 }} />
-                            <Typography color="gray.300">Budget</Typography>
+                            <Typography color="gray.300">Campaign Amount</Typography>
                             <Typography fontWeight={700} fontSize={18}>
-                                ${data.budget}
+                                ${data.campaignAmount || 0}
                             </Typography>
                         </Box>
                     </Grid>
 
-                    <Grid size={{ xs: 12, md: 6 }}>
+                    <Grid size={{xs: 12, md: 6}}>
                         <Box
                             sx={{
                                 background: "rgba(255,255,255,0.05)",
@@ -174,15 +231,15 @@ const CampaignDetailsModal = ({ open, onClose, data }: any) => {
                                 borderRadius: 2,
                             }}
                         >
-                            <Groups sx={{ color: "var(--color-primary)", mb: 1 }} />
-                            <Typography color="gray.300">Influencers</Typography>
+                            <AttachMoney sx={{ color: "#4CAF50", mb: 1 }} />
+                            <Typography color="gray.300">Paid Amount</Typography>
                             <Typography fontWeight={700} fontSize={18}>
-                                {data.usedInfluencers}/{data.totalInfluencers}
+                                ${data.paidAmount || 0}
                             </Typography>
                         </Box>
                     </Grid>
 
-                    <Grid size={{ xs: 12, md: 6 }}>
+                    <Grid size={{xs: 12, md: 6}}>
                         <Box
                             sx={{
                                 background: "rgba(255,255,255,0.05)",
@@ -191,19 +248,115 @@ const CampaignDetailsModal = ({ open, onClose, data }: any) => {
                                 borderRadius: 2,
                             }}
                         >
-                            <GridView sx={{ color: "var(--color-primary)", mb: 1 }} />
-                            <Typography color="gray.300">Platforms Used</Typography>
+                            <AttachMoney sx={{ color: "#FF9800", mb: 1 }} />
+                            <Typography color="gray.300">Remaining</Typography>
                             <Typography fontWeight={700} fontSize={18}>
-                                {data.platforms?.length}
+                                ${data.remainingAmount || 0}
                             </Typography>
+                        </Box>
+                    </Grid>
+
+                    <Grid size={{xs: 12, md: 6}}>
+                        <Box
+                            sx={{
+                                background: "rgba(255,255,255,0.05)",
+                                border: "1px solid rgba(255,255,255,0.1)",
+                                p: 2,
+                                borderRadius: 2,
+                            }}
+                        >
+                            <Typography color="gray.300">Platform Fee</Typography>
+                            <Typography fontWeight={700} fontSize={18}>
+                                {data.platformFee}%
+                            </Typography>
+                        </Box>
+                    </Grid>
+
+                    <Grid size={{xs: 12, md: 6}}>
+                        <Box
+                            sx={{
+                                background: "rgba(255,255,255,0.05)",
+                                border: "1px solid rgba(255,255,255,0.1)",
+                                p: 2,
+                                borderRadius: 2,
+                            }}
+                        >
+                            <Typography color="gray.300">Payment Status</Typography>
+                            <Chip
+                                label={data.paymentStatus || 'pending'}
+                                sx={{
+                                    mt: 1,
+                                    background: data.isPaid ? '#E6F7E6' : '#FFF3E0',
+                                    color: data.isPaid ? '#2E7D32' : '#F57C00',
+                                    fontWeight: 600,
+                                    textTransform: 'capitalize'
+                                }}
+                            />
                         </Box>
                     </Grid>
                 </Grid>
+
+                <Divider sx={{ my: 3, borderColor: "rgba(255,255,255,0.1)" }} />
+
+                {/* Budget Details */}
+                <Typography variant="h6" sx={{ color: "var(--color-primary)", mb: 2 }}>
+                    Reward Structure
+                </Typography>
+
+                <Grid container spacing={2}>
+                    <Grid size={{xs: 12, md: 6}}>
+                        <Typography color="gray.300" fontSize={12}>Reward Rate</Typography>
+                        <Typography fontWeight={600}>{data.budget?.rewardRate || 0}%</Typography>
+                    </Grid>
+                    <Grid size={{xs: 12, md: 6}}>
+                        <Typography color="gray.300" fontSize={12}>Per Views</Typography>
+                        <Typography fontWeight={600}>{data.budget?.perViews || 0}</Typography>
+                    </Grid>
+                    <Grid size={{xs: 12, md: 6}}>
+                        <Typography color="gray.300" fontSize={12}>Min Payout</Typography>
+                        <Typography fontWeight={600}>${data.budget?.minPayout || 0}</Typography>
+                    </Grid>
+                    <Grid size={{xs: 12, md: 6}}>
+                        <Typography color="gray.300" fontSize={12}>Max Payout</Typography>
+                        <Typography fontWeight={600}>${data.budget?.maxPayout || 0}</Typography>
+                    </Grid>
+                    <Grid size={{xs: 12, md: 6}}>
+                        <Typography color="gray.300" fontSize={12}>Flat Price</Typography>
+                        <Typography fontWeight={600}>${data.budget?.flatPrice || 0}</Typography>
+                    </Grid>
+                </Grid>
+
+                {/* Assets */}
+                {data.assets?.availableContentLink && (
+                    <>
+                        <Divider sx={{ my: 3, borderColor: "rgba(255,255,255,0.1)" }} />
+                        <Typography variant="h6" sx={{ color: "var(--color-primary)", mb: 2 }}>
+                            Assets
+                        </Typography>
+                        <Typography color="gray.300" fontSize={12}>Content Link</Typography>
+                        <Typography 
+                            fontWeight={600} 
+                            sx={{ 
+                                wordBreak: 'break-all',
+                                color: '#64B5F6',
+                                cursor: 'pointer',
+                                '&:hover': { textDecoration: 'underline' }
+                            }}
+                            onClick={() => window.open(data.assets.availableContentLink, '_blank')}
+                        >
+                            {data.assets.availableContentLink}
+                        </Typography>
+                    </>
+                )}
             </DialogContent>
 
             {/* Footer */}
             <DialogActions sx={{ p: 2 }}>
-                <Button variant="outlined" onClick={onClose} sx={{ borderColor: "#CF9702", color: "#CF9702" }}>
+                <Button 
+                    variant="outlined" 
+                    onClick={onClose} 
+                    sx={{ borderColor: "#CF9702", color: "#CF9702" }}
+                >
                     Close
                 </Button>
             </DialogActions>
@@ -212,4 +365,3 @@ const CampaignDetailsModal = ({ open, onClose, data }: any) => {
 };
 
 export default CampaignDetailsModal;
-

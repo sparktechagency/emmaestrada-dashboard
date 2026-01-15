@@ -10,10 +10,18 @@ import {
   Typography
 } from "@mui/material";
 import dayjs from "dayjs";
+import { useGetSingleUserQuery } from "../../../redux/features/user/userApi";
+import { imageUrl } from "../../../redux/base/baseAPI";
 
 
 
-const UserDetailsModal = ({ open, data, onClose }: any) => {
+const UserDetailsModal = ({ open,userId, onClose }: any) => {
+
+  const {data} = useGetSingleUserQuery(userId);
+  
+  console.log("UserDetailsModal", data);
+  
+  
   return (
     <Dialog
       open={open}
@@ -47,7 +55,7 @@ const UserDetailsModal = ({ open, data, onClose }: any) => {
         {/* Profile Section */}
         <Box display="flex" alignItems="center" gap={2}>
           <Avatar
-            src={data?.profileImage}
+            src={`${imageUrl + data?.image}`}
             alt={data?.name}
             sx={{ width: 80, height: 80 }}
           />
@@ -110,8 +118,8 @@ const UserDetailsModal = ({ open, data, onClose }: any) => {
           </Grid>
 
           <Grid size={{xs:12, sm:6}} >
-            <Typography color="gray">Phone</Typography>
-            <Typography fontWeight={500}>{data?.phone ?? "—"}</Typography>
+            <Typography color="gray">Country</Typography>
+            <Typography fontWeight={500}>{data?.country ?? "—"}</Typography>
           </Grid>
 
           <Grid size={{xs:12, sm:6}} >
@@ -136,18 +144,18 @@ const UserDetailsModal = ({ open, data, onClose }: any) => {
 
         <Grid container spacing={2} mt={1}>
           <Grid size={{ xs: 12, sm: 4 }}>
-            <Typography color="gray">Instagram</Typography>
-            <Typography fontWeight={500}>{data?.instagram ?? "—"}</Typography>
+            <Typography color="gray">Instagram Followers</Typography>
+            <Typography fontWeight={500}>{data?.instagramFollowers ?? "—"}</Typography>
           </Grid>
 
           <Grid size={{ xs: 12, sm: 4 }}>
-            <Typography color="gray">Tiktok</Typography>
-            <Typography fontWeight={500}>{data?.tiktok ?? "—"}</Typography>
+            <Typography color="gray">Tiktok Followers</Typography>
+            <Typography fontWeight={500}>{data?.tiktokFollowers ?? "—"}</Typography>
           </Grid>
 
           <Grid size={{ xs: 12, sm: 4 }}>
-            <Typography color="gray">YouTube</Typography>
-            <Typography fontWeight={500}>{data?.youtube ?? "—"}</Typography>
+            <Typography color="gray">YouTube Followers</Typography>
+            <Typography fontWeight={500}>{data?.youtubeFollowers ?? "—"}</Typography>
           </Grid>
         </Grid>
 

@@ -1,7 +1,8 @@
 import { Grid } from '@mui/material'
 import Statics from './Statics'
-import CampaignsChart from './CampaignsChart'
+
 import RevenueCharts from './RevenueCharts'
+import UserGrowthChart from './UserGrowthChart'
 
 export const Dashboard = () => {
 
@@ -13,7 +14,7 @@ export const Dashboard = () => {
           <RevenueCharts />
         </Grid>
         <Grid size={6}>
-          <CampaignsChart />
+          <UserGrowthChart />
         </Grid>
       </Grid>
     </div>

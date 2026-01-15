@@ -59,6 +59,9 @@ const PlannerManage = () => {
   const [updatePlanner] = useUpdatePlannerMutation();
   const [deletePlanner] = useDeletePlannerMutation();
 
+  console.log("plannersData", plannersData);
+  
+
   /* ---------- HANDLERS ---------- */
   const handleCreate = async (data: any) => {
     try {

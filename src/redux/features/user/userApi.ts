@@ -3,10 +3,16 @@ import { baseApi } from "../../base/baseAPI";
 const userApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     getUsers: build.query({      
-      query: () =>`/users${location.search}`,
-      providesTags: ['user']
-      // transformResponse: (response: { data: any }) => response.data,
+      query: () =>`/user-managements${location.search}`,
+      providesTags: ['user'],      
     }),
+
+    getSingleUser: build.query({      
+      query: (id) =>`/user-managements/${id}`,
+      providesTags: ['user'],
+      transformResponse: (response: { data: any }) => response.data,
+    }),
+
     getProfile: build.query({
       query: ()=> `/users/profile`,
       transformResponse: (response: {data: any})=> response.data,
@@ -40,7 +46,7 @@ const userApi = baseApi.injectEndpoints({
     updateUser: build.mutation({
       query: (data)=>{        
         return {
-          url: `/users/${data?.id}`,
+          url: `/user-managements/status/${data?.id}`,
           method: "PATCH",
           body: data
         }        
@@ -68,6 +74,8 @@ export const {
     useGetProfileQuery,
     useGetAllSubscriberQuery,
 
+    
+    useGetSingleUserQuery,
     useDeleteUserMutation,
     useEditProfileMutation,
     useCreateAdminMutation,
