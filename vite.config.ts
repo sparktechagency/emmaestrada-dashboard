@@ -9,5 +9,10 @@ export default defineConfig({
   server: {
     host: "72.62.176.14",    
     port: 3010,
-  },
+    allowedHosts: [
+      'dashboard.wesound.app',
+      'www.dashboard.wesound.app',
+      'localhost',
+    ],
+  },  
 })
