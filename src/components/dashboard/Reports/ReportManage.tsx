@@ -19,8 +19,7 @@ import {
 import { AlertTriangle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { FaFlag, FaSearch } from "react-icons/fa";
-import { IoEyeOutline } from "react-icons/io5";
-import { MdDelete } from "react-icons/md";
+import Swal from "sweetalert2";
 import { imageUrl } from "../../../redux/base/baseAPI";
 import {
     useActionReportMutation,
@@ -31,8 +30,6 @@ import { getSearchParams } from "../../../utils/getSearchParams";
 import { useUpdateSearchParams } from "../../../utils/updateSearchParams";
 import { FormatDate } from "../../shared/FormatDate";
 import SharedInput from "../../shared/SharedInput";
-import { useUpdateUserMutation } from "../../../redux/features/user/userApi";
-import Swal from "sweetalert2";
 
 
 const StyledHeadCell = styled(TableCell)(() => ({
@@ -55,7 +52,7 @@ const ReportManage = () => {
     const [currentPage, setCurrentPage] = useState(Math.max(1, page || 1));
     const [searchText, setSearchText] = useState("");
 
-    const [updateUser] = useUpdateUserMutation()
+    
     const updateSearchParams = useUpdateSearchParams();
     const { searchTerm } = getSearchParams();
 
@@ -81,7 +78,7 @@ const ReportManage = () => {
         updateSearchParams({ searchTerm: search });
     };
 
-    const handleChangePage = (event: any, newPage: any) => {
+    const handleChangePage = (_?: any, newPage?: any) => {
         setCurrentPage(newPage);
         updateSearchParams({ page: newPage });
     };

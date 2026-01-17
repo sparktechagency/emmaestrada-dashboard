@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import { LockKeyhole, LockKeyholeOpen } from "lucide-react";
 import { IoEyeOutline } from "react-icons/io5";
 
+import { PiUserCircleBold, PiUserSoundBold } from "react-icons/pi";
 import Swal from "sweetalert2";
 import { imageUrl } from "../../../redux/base/baseAPI";
 import { useGetUsersQuery, useUpdateUserMutation } from "../../../redux/features/user/userApi";
@@ -25,7 +26,6 @@ import { useUpdateSearchParams } from "../../../utils/updateSearchParams";
 import { FormatDate } from "../../shared/FormatDate";
 import SharedInput from "../../shared/SharedInput";
 import UserDetailsModal from "./UserDetailsModal";
-import { PiUserCircleBold, PiUserSoundBold } from "react-icons/pi";
 
 // ------------------ TABLE STYLES -------------------
 const StyledHeadCell = styled(TableCell)(() => ({
@@ -53,19 +53,19 @@ const UsersList = () => {
   const { data: usersData, refetch } = useGetUsersQuery({});
   const [updateUser] = useUpdateUserMutation()
 
-  const [searchText, setSearchText] = useState("");  
+  // const [searchText, setSearchText] = useState("");  
 
   const updateSearchParams = useUpdateSearchParams();
   const { searchTerm } = getSearchParams();
 
   useEffect(() => {
-    setSearchText(searchTerm);
+    // setSearchText(searchTerm);
     refetch()
   }, [searchTerm]);
 
   const handleSearch = (e: any) => {
     const search = e.target.value;
-    setSearchText(search);
+    // setSearchText(search);
     updateSearchParams({ searchTerm: search })
   };
 
