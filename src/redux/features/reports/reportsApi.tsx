@@ -3,8 +3,7 @@ import { baseApi } from "../../base/baseAPI";
 const reportsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getReports: builder.query({
-      query: () => `/reports${location?.search}`,
-      transformResponse: (res: { data: any }) => res?.data,
+      query: () => `/reports${location?.search}`,      
     }),
     updateReport: builder.mutation({
       query: ({id, ...data})=>{
@@ -14,6 +13,23 @@ const reportsApi = baseApi.injectEndpoints({
           body: data,
         }
       }
+    }),
+
+    actionReport: builder.mutation({
+      query: (id)=>{
+        return {
+          url: `/reports/${id}/disable`,
+          method: "POST",          
+        }
+      }
+    }),
+    deleteReport: builder.mutation({
+      query: (id)=>{
+        return {
+          url: `/reports/${id}`,
+          method: "DELETE",          
+        }
+      }
     })
   }),
 });
@@ -21,4 +37,6 @@ const reportsApi = baseApi.injectEndpoints({
 export const {
   useGetReportsQuery,
   useUpdateReportMutation,
+  useActionReportMutation,
+  useDeleteReportMutation
 } = reportsApi;

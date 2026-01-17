@@ -2,7 +2,7 @@ import { Copy, DollarSign, Images, Music } from "lucide-react";
 import { FaStore } from "react-icons/fa";
 import { IoHelpBuoyOutline, IoSettingsOutline } from "react-icons/io5";
 import { LuNotepadText } from "react-icons/lu";
-import { MdOutlineDashboard } from "react-icons/md";
+import { MdOutlineDashboard, MdOutlineReport } from "react-icons/md";
 import { BiMoneyWithdraw } from "react-icons/bi";
 
 interface NavItem {
@@ -47,6 +47,11 @@ export const navItems: NavItem[] = [
     to: "/commission-manage",
     label: "Commission Manage",
     icon: <DollarSign />
+  },
+  {
+    to: "/report-manage",
+    label: "Reports",
+    icon: <MdOutlineReport />
   },
   {
     to: "/all-admin",

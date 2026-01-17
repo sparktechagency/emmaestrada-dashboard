@@ -4,13 +4,18 @@ const notificationApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
         getNotifications: build.query({
             query: () => `/notifications${location?.search}`,
-            providesTags: ['notifications'],
-            transformResponse: (response: { data: any }) => response.data,
+            providesTags: ['notifications'],            
         }),
 
-        readNotification: build.mutation({
+        notificationCount: build.query({
+            query: () => `/notifications${location?.search}`,
+            providesTags: ['notifications'],
+            transformResponse: (response: { data: any }) => response?.data?.unreadCount,
+        }),
+
+        readAllNotification: build.mutation<void, void>({
             query: () => ({
-                url: `/notifications/read`,
+                url: `/notifications`,
                 method: "PATCH",
             }),
             invalidatesTags: ['notifications']
@@ -19,4 +24,4 @@ const notificationApi = baseApi.injectEndpoints({
     })
 })
 
-export const { useGetNotificationsQuery, useReadNotificationMutation } = notificationApi;
+export const { useGetNotificationsQuery, useNotificationCountQuery, useReadAllNotificationMutation } = notificationApi;

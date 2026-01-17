@@ -19,9 +19,6 @@ const UserDetailsModal = ({ open,userId, onClose }: any) => {
 
   const {data} = useGetSingleUserQuery(userId);
   
-  console.log("UserDetailsModal", data);
-  
-  
   return (
     <Dialog
       open={open}

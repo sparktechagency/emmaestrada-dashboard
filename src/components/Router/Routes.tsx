@@ -19,6 +19,7 @@ import PrivateRoute from "./PrivateRoute";
 import SliderManage from "../dashboard/SlidersManage/SlidersManage";
 import WithdrawManage from "../dashboard/WithdrawManage/WithdrawManage";
 import PlannerManage from "../dashboard/PlannerManage/PlannerManage";
+import ReportManage from "../dashboard/Reports/ReportManage";
 
 
 
@@ -64,6 +65,10 @@ const router = createBrowserRouter([
             {
                 path: "commission-manage",
                 element: <CommissionManage />
+            },
+            {
+                path: "report-manage",
+                element: <ReportManage />
             },
             {
                 path: "campaigns-list",
