@@ -40,7 +40,7 @@ const settingsItems = [
   { name: "Personal Information", key: "personal", icon: null },
   { name: "Change Password", key: "password", icon: null },
   { name: "Terms & Condition", key: "terms", icon: null },
-  { name: "About Us", key: "about", icon: null },
+  // { name: "About Us", key: "about", icon: null },
   { name: "FAQ", key: "faq", icon: null },
 ];
 

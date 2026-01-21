@@ -14,18 +14,19 @@ import {
 } from "@mui/material";
 import dayjs from "dayjs";
 import { useState } from "react";
-import { FaEdit, FaTrashAlt } from "react-icons/fa";
-import Swal from "sweetalert2";
+import { FaTrashAlt } from "react-icons/fa";
 import { toast } from "sonner";
+import Swal from "sweetalert2";
 
-import SliderModal from "./SliderModal";
 import { Link } from "react-router-dom";
-import { useAddSliderMutation, useDeleteSliderMutation, useGetSlidersQuery, useUpdateSliderMutation } from "../../../redux/features/sldier/sliderApi";
+import { imageUrl } from "../../../redux/base/baseAPI";
+import { useAddSliderMutation, useDeleteSliderMutation, useGetSlidersQuery } from "../../../redux/features/sldier/sliderApi";
+import SliderModal from "./SliderModal";
 
 /* ---------------- TYPES ---------------- */
 interface Slider {
-    _id: string;    
-    name?: string;  
+    _id: string;
+    image?: string;
     link?: string;
     isActive: boolean;
     createdAt: string;
@@ -47,35 +48,25 @@ const StyledRow = styled(TableRow)(() => ({
 }));
 
 /* ---------------- COMPONENT ---------------- */
-const SliderManage = () => {
-    const [selected, setSelected] = useState<Slider | null>(null);
+const SliderManage = () => {    
     const [openModal, setOpenModal] = useState(false);
 
     const { data: slidersData } = useGetSlidersQuery({});
 
-    const [addSlider] = useAddSliderMutation();
-    const [updateSlider] = useUpdateSliderMutation();
+    const [addSlider] = useAddSliderMutation();    
     const [deleteSlider] = useDeleteSliderMutation();
-
-    console.log("slidersDataSlidersData", slidersData);
 
     /* ---------- HANDLERS ---------- */
     const handleCreate = async (data: any) => {
-        try {
-            const res = await addSlider(data).unwrap();
-            if (res?.data) toast.success(res?.message);
-        } catch (error) {
-            console.log("slider error", error);
-        }
-    };
+        const formData = new FormData();
+        formData.append("image", data?.imageFile)
+        formData.append("link", data?.link)
 
-    const handleUpdate = async (data: any) => {
         try {
-            const res = await updateSlider({
-                id: selected?._id,
-                name: data?.name,                
-                link: data?.link,
-            }).unwrap();
+            const res = await addSlider(formData).unwrap();
+
+            console.log("handleCreate", res);
+
             if (res?.data) toast.success(res?.message);
         } catch (error) {
             console.log("slider error", error);
@@ -120,8 +111,8 @@ const SliderManage = () => {
                     <TableHead>
                         <StyledRow>
                             <StyledHeadCell>SL</StyledHeadCell>
-                            <StyledHeadCell>Name</StyledHeadCell>                            
-                            <StyledHeadCell>Link</StyledHeadCell>                            
+                            <StyledHeadCell>Name</StyledHeadCell>
+                            <StyledHeadCell>Link</StyledHeadCell>
                             <StyledHeadCell>Created</StyledHeadCell>
                             <StyledHeadCell align="center">Actions</StyledHeadCell>
                         </StyledRow>
@@ -134,9 +125,16 @@ const SliderManage = () => {
                                     <TableCell sx={{ color: "white" }}>
                                         {index + 1}
                                     </TableCell>
-                                    <TableCell sx={{ color: "white" }}>
-                                        {slider?.name}
-                                    </TableCell>                                    
+                                    <TableCell sx={{ color: "white" }}>                                        
+                                        <img
+                                            src={slider?.image ? `${imageUrl}${slider?.image}` : '/placeholder.png'}
+                                            alt="thumbnail"
+                                            style={{ width: 60, height: 60, objectFit: "cover" }}
+                                            onError={(e: any) => {
+                                                e.target.src = '/placeholder.png';
+                                            }}
+                                        />
+                                    </TableCell>
                                     <TableCell sx={{ color: "white" }}>
                                         {slider?.link ? (
                                             <Link
@@ -153,15 +151,7 @@ const SliderManage = () => {
                                         {dayjs(slider.createdAt).format("DD MMM, YYYY")}
                                     </TableCell>
                                     <TableCell>
-                                        <Box display="flex" justifyContent="center" gap={1}>
-                                            <IconButton
-                                                onClick={() => {
-                                                    setSelected(slider);
-                                                    setOpenModal(true);
-                                                }}
-                                            >
-                                                <FaEdit color="#60a5fa" />
-                                            </IconButton>
+                                        <Box display="flex" justifyContent="center" gap={1}>                
                                             <IconButton
                                                 onClick={() => handleDelete(slider._id)}
                                             >
@@ -178,14 +168,10 @@ const SliderManage = () => {
             {/* Modal */}
             <SliderModal
                 open={openModal}
-                editData={selected}
                 setOpen={(v: any) => {
-                    setOpenModal(v);
-                    if (!v) setSelected(null);
+                    setOpenModal(v);                    
                 }}
-                onSubmit={(data: any) =>
-                    selected ? handleUpdate(data) : handleCreate(data)
-                }
+                onSubmit={(data: any) => handleCreate(data)}
             />
         </Box>
     );

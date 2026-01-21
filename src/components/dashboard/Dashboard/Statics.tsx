@@ -15,9 +15,9 @@ const Statics = () => {
     { id: 1, title: "Active Campaign", value: staticData?.activeCampaigns ?? 0, icon: <FiUsers size={30} /> },
     { id: 2, title: "Total Creators", value: staticData?.totalCreators ?? 0, icon: <GoComment size={30} />, },
     { id: 3, title: "Total Promotor", value: staticData?.totalPromoters ?? 0, icon: <FiUserCheck size={30} /> },
-    { id: 4, title: "Total Order Amount", value: staticData?.totalOrderAmount ?? 0, icon: <FiUserCheck size={30} /> },
-    { id: 5, title: "Total Received Amount", value: staticData?.totalReceivedAmount ?? 0, icon: <IoMusicalNotes size={30} /> },
-    { id: 6, title: "Total Commission", value: staticData?.totalPlatformFee ?? 0, icon: <FiDollarSign size={30} /> },
+    { id: 4, title: "Total Order Amount", value: staticData?.totalOrderAmount?.toFixed(2) ?? 0, icon: <FiUserCheck size={30} /> },
+    { id: 5, title: "Total Received Amount", value: staticData?.totalReceivedAmount?.toFixed(2) ?? 0, icon: <IoMusicalNotes size={30} /> },
+    { id: 6, title: "Total Commission", value: staticData?.totalPlatformFee?.toFixed(2) ?? 0, icon: <FiDollarSign size={30} /> },
 
   ];
 

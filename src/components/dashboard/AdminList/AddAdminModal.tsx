@@ -7,7 +7,7 @@ import {
   Grid,
   IconButton,
   InputAdornment,
-  TextField
+  TextField,
 } from "@mui/material";
 import React, { useEffect } from "react";
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
@@ -27,22 +27,22 @@ const AddAdminModal: React.FC<AddAdminModalProps> = ({
   onSubmit,
 }) => {
   const [values, setValues] = React.useState({
-    firstName: "",
-    lastName: "",
-    email: "",    
+    name: "",
+    email: "",
     password: "",
+    role: "ADMIN",
   });
 
   const [showPassword, setShowPassword] = React.useState(false);
 
-  // Pre-fill when editing
+  // Pre-fill form when editing an existing admin
   useEffect(() => {
     if (editData) {
       setValues({
-        firstName: editData?.firstName || "",
-        lastName: editData?.lastName || "",
-        email: editData?.email || "",        
-        password: "",
+        name: editData.name || "",
+        email: editData.email || "",
+        password: "", // don't pre-fill password for security
+        role: editData.role || "ADMIN",
       });
     }
   }, [editData]);
@@ -50,32 +50,41 @@ const AddAdminModal: React.FC<AddAdminModalProps> = ({
   const handleClose = () => {
     setOpen(false);
     setValues({
-      firstName: "",
-      lastName: "",
-      email: "",      
+      name: "",
+      email: "",
       password: "",
+      role: "ADMIN",
     });
   };
 
-
   const handleSubmit = () => {
-    if (
-      !values.firstName 
-      || !values.lastName 
-      || !values.email       
-      || (!editData && !values.password)) {
+    // Basic validation
+    if (!values.name || !values.email || (!editData && !values.password)) {
       return;
     }
-    onSubmit(values);
+
+    // Construct payload exactly as backend expects
+    const payload = {
+      name: values.name.trim(),
+      email: values.email.trim(),
+      password: values.password,
+      role: "ADMIN",
+    };
+
+    onSubmit(payload);
     handleClose();
   };
 
   const handleChange = (key: string, value: string) => {
-    setValues({ ...values, [key]: value });
+    setValues((prev) => ({ ...prev, [key]: value }));
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm" className="bg-black/70 "
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      fullWidth
+      maxWidth="sm"
       PaperProps={{
         sx: {
           background: "#121212",
@@ -83,45 +92,38 @@ const AddAdminModal: React.FC<AddAdminModalProps> = ({
           border: "1px solid rgba(207,151,2,0.7)",
           borderRadius: 3,
         },
-      }}>
+      }}
+    >
       <DialogTitle sx={{ fontSize: 20, fontWeight: 600 }}>
         {!editData ? "Add Admin" : "Edit Admin"}
       </DialogTitle>
 
       <DialogContent dividers>
         <Grid container spacing={2}>
-
-          {/* Name */}
+          {/* Full Name */}
           <Grid size={12}>
             <SharedInput
-              label="First Name"
-              placeholder="First Name"
-              value={values.firstName}
-              onChange={(e: any) => handleChange("firstName", e.target.value)}
-            />
-          </Grid>
-          <Grid size={12}>
-            <SharedInput
-              label="Last Name"
-              placeholder="Last Name"
-              value={values.lastName}
-              onChange={(e: any) => handleChange("lastName", e.target.value)}
+              label="Full Name"
+              placeholder="Enter full name"
+              value={values.name}
+              onChange={(e: any) => handleChange("name", e.target.value)}
+              required
             />
           </Grid>
 
           {/* Email */}
           <Grid size={12}>
             <SharedInput
-
               label="Email"
               type="email"
+              placeholder="Enter email"
               value={values.email}
               onChange={(e: any) => handleChange("email", e.target.value)}
               required
             />
           </Grid>
 
-          {/* Password (Add Only) */}
+          {/* Password - only shown when adding new admin */}
           {!editData && (
             <Grid size={12}>
               <TextField
@@ -129,7 +131,7 @@ const AddAdminModal: React.FC<AddAdminModalProps> = ({
                 label="Password"
                 type={showPassword ? "text" : "password"}
                 value={values.password}
-                onChange={(e) => setValues({ ...values, password: e.target.value })}
+                onChange={(e) => handleChange("password", e.target.value)}
                 required
                 sx={{
                   height: 45,
@@ -150,25 +152,23 @@ const AddAdminModal: React.FC<AddAdminModalProps> = ({
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton onClick={() => setShowPassword(!showPassword)}>
-                        {showPassword ? <MdOutlineVisibilityOff size={22} color="white" /> : <MdOutlineVisibility size={22} color="white" />}
+                        {showPassword ? (
+                          <MdOutlineVisibilityOff size={22} color="white" />
+                        ) : (
+                          <MdOutlineVisibility size={22} color="white" />
+                        )}
                       </IconButton>
                     </InputAdornment>
                   ),
                 }}
               />
-
             </Grid>
           )}
         </Grid>
       </DialogContent>
 
       <DialogActions sx={{ px: 3, pb: 2 }}>
-        <Button
-          onClick={handleClose}
-          variant="outlined"
-          size="large"
-          sx={{ height: 45 }}
-        >
+        <Button onClick={handleClose} variant="outlined" size="large" sx={{ height: 45 }}>
           Cancel
         </Button>
         <Button

@@ -22,12 +22,11 @@ const PersonalInformation = () => {
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   const [editProfile, { isLoading: editing }] = useEditProfileMutation();
-  const { data: profileData, refetch } = useGetProfileQuery(undefined);
-
+  const { data: profileData, refetch } = useGetProfileQuery(undefined);  
+  
   const [formData, setFormData] = useState({
     name: "",
-    email: "",
-    mobile: "",
+    email: "",    
   });
 
   // Prefill form
@@ -35,8 +34,7 @@ const PersonalInformation = () => {
     if (profileData) {
       setFormData({
         name: profileData?.name || "",
-        email: profileData?.email || "",
-        mobile: profileData?.mobile || "",
+        email: profileData?.email || "",        
       });
     }
   }, [profileData]);
@@ -63,7 +61,7 @@ const PersonalInformation = () => {
     if (!imageFile) return toast.error("No file selected");
 
     const formData = new FormData();
-    formData.append("profileImage", imageFile);
+    formData.append("image", imageFile);
 
     try {
       const res = await editProfile(formData).unwrap();
@@ -112,8 +110,8 @@ const PersonalInformation = () => {
               <img
                 src={
                   imgURL ??
-                  (profileData?.profileImage
-                    ? `${imageUrl}${profileData.profileImage}`
+                  (profileData?.image
+                    ? `${imageUrl}${profileData?.image}`
                     : "/placeholder.png")
                 }
                 alt="Profile"
@@ -187,13 +185,7 @@ const PersonalInformation = () => {
               placeholder="Enter email"
               value={formData.email}
               onChange={(e: any) => handleChange("email", e.target.value)}
-            />
-            <SharedInput
-              label="Mobile"
-              placeholder="Enter mobile"
-              value={formData.mobile}
-              onChange={(e: any) => handleChange("mobile", e.target.value)}
-            />
+            />         
            
             <Button
               variant="contained"

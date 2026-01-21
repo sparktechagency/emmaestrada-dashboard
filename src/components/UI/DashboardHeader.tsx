@@ -51,15 +51,15 @@ const DashboardHeader = () => {
             sizes="large"
             alt="Remy Sharp"
             src={
-              profileData?.profileImage
-                ? `${imageUrl}${profileData?.profileImage}`
+              profileData?.image
+                ? `${imageUrl}${profileData?.image}`
                 : "/placeholder.png"
             }
           />
         </Link>
         <Box sx={{ display: { xs: "none", sm: "block" } }}>
-          <p className="font-bold text-lg text-white">S S Md. Bayzid</p>
-          <p className="text-slate-500 font-semibold">ssmd.bayzid@gmail.com</p>
+          <p className="font-bold text-lg text-white">{profileData?.name ?? "N/A"}</p>
+          <p className="text-slate-500 font-semibold">{profileData?.email ?? "N/A"}</p>
         </Box>
       </div>
     </div>

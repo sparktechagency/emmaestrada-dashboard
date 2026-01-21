@@ -51,9 +51,12 @@ const SharedInput = ({
             borderColor: "rgba(255,255,255,0.5)",
         },
 
-        "& .MuiInputBase-input::placeholder": {
+        "& .MuiInputBase-input::hover": {
           color: "#9ca3af",
           opacity: 1,
+        },
+        "& .MuiInputBase-input::placeholder": {
+          borderColor: "rgba(255,255,255,0.5)",          
         },
 
         "& .MuiInputLabel-root": {

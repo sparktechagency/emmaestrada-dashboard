@@ -26,14 +26,22 @@ const userApi = baseApi.injectEndpoints({
           method: "POST",
           body: data
         }
-      }
+      },
+      invalidatesTags: ['user', 'admin'],      
     }),
     
     getAdmin: build.query({
-        query: ()=> `/users/admins${location.search}`,
+        query: ()=> `/admins/get-admin${location.search}`,
         providesTags: ['admin'],
         transformResponse: (response: {data: any})=> response.data,
     }),
+    deleteAdmin: build.mutation({
+        query: (id)=> {return {url: `/admins/${id}`, method: "DELETE"}},
+        invalidatesTags: ['admin'],
+        
+    }),
+
+
     editProfile: build.mutation({
       query: (data)=>{
         return {
@@ -74,7 +82,7 @@ export const {
     useGetProfileQuery,
     useGetAllSubscriberQuery,
 
-    
+    useDeleteAdminMutation,
     useGetSingleUserQuery,
     useDeleteUserMutation,
     useEditProfileMutation,

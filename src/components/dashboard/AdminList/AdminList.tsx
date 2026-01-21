@@ -1,9 +1,6 @@
-import LockIcon from "@mui/icons-material/Lock";
-import LockOpenIcon from "@mui/icons-material/LockOpen";
 import {
   Box,
   Button,
-  IconButton,
   Paper,
   styled,
   Table,
@@ -17,11 +14,10 @@ import {
 import React, { useState } from "react";
 
 import { FaTrashAlt } from "react-icons/fa";
-import { IoEyeOutline } from "react-icons/io5";
+import { toast } from "sonner";
+import { useCreateAdminMutation, useDeleteAdminMutation, useGetAdminQuery } from "../../../redux/features/user/userApi";
 import ConfirmModal from "../../UI/ConfirmModel";
 import AddAdminModal from "./AddAdminModal"; // Your existing AddAdminModal
-import { toast } from "sonner";
-import { useCreateAdminMutation } from "../../../redux/features/user/userApi";
 
 // ---------- MOCK DATA ----------
 interface Admin {
@@ -32,11 +28,6 @@ interface Admin {
   status: "ACTIVE" | "INACTIVE";
   joinDate: string;
 }
-const MOCK_ADMIN_DATA: Admin[] = [
-  { _id: "1", name: "Alice Johnson", email: "admin1@example.com", role: "SUPER_ADMIN", status: "ACTIVE", joinDate: "2023-01-15" },
-  { _id: "2", name: "Bob Smith", email: "admin2@example.com", role: "ADMIN", status: "INACTIVE", joinDate: "2023-05-20" },
-  { _id: "3", name: "Charlie Brown", email: "admin3@example.com", role: "ADMIN", status: "ACTIVE", joinDate: "2024-03-10" },
-];
 
 // ------------------ TABLE STYLES -------------------
 const StyledHeadCell = styled(TableCell)(() => ({
@@ -55,39 +46,35 @@ const StyledRow = styled(TableRow)(() => ({
 
 // ---------------- ADMIN LIST COMPONENT ----------------
 const AdminList: React.FC = () => {
-  const [admins, setAdmins] = useState(MOCK_ADMIN_DATA);
   const [selectedAdmin, setSelectedAdmin] = useState<Admin | null>(null);
   const [openConfirm, setOpenConfirm] = useState(false);
   const [openAddModal, setOpenAddModal] = useState(false);
   const [createAdmin] = useCreateAdminMutation()
+  const { data: adminsData } = useGetAdminQuery({});
+  const [deleteAdmin] = useDeleteAdminMutation();
 
-  const handleDeleteAdmin = () => {
-    if (!selectedAdmin) return;
-    setAdmins(prev => prev.filter(a => a._id !== selectedAdmin._id));
-    toast.success("Admin deleted successfully");
-    setSelectedAdmin(null);
+
+  const handleDeleteAdmin = async () => {
+    try {
+      const res = await deleteAdmin(selectedAdmin?._id).unwrap();      
+      toast.success(res?.data?.message);
+          setSelectedAdmin(null);
     setOpenConfirm(false);
+    } catch (error) {
+      console.log("error");
+    }    
   };
 
-  const handleUpdateStatus = (admin: Admin) => {
-    setAdmins(prev =>
-      prev.map(a =>
-        a._id === admin._id ? { ...a, status: a.status === "ACTIVE" ? "INACTIVE" : "ACTIVE" } : a
-      )
-    );
-    toast.success("Admin status updated");
-  };
 
-  const handleCreateAdmin = async(values: Admin) => {
-      try {
-        const res = await createAdmin(values).unwrap();
 
-        console.log("res", res);        
-        toast.success(res?.data?.message);
-      } catch (error) {
-        console.log("error");
-        
-      }
+  const handleCreateAdmin = async (values: Admin) => {
+    try {
+      const res = await createAdmin(values).unwrap();
+      toast.success(res?.data?.message);
+    } catch (error) {
+      console.log("error");
+
+    }
   };
 
   return (
@@ -110,42 +97,32 @@ const AdminList: React.FC = () => {
               <StyledHeadCell>Name</StyledHeadCell>
               <StyledHeadCell>Role</StyledHeadCell>
               <StyledHeadCell>Status</StyledHeadCell>
-              <StyledHeadCell>Join Date</StyledHeadCell>
               <StyledHeadCell>Actions</StyledHeadCell>
             </StyledRow>
           </TableHead>
           <TableBody>
-            {admins.map((admin, index) => (
-              <StyledRow key={admin._id}>
+            {adminsData?.length > 0 ? adminsData?.map((admin: any, index: number) => (
+              <StyledRow key={index}>
                 <TableCell sx={{ color: "white" }}>{index + 1}</TableCell>
-                <TableCell sx={{ color: "white" }}>{admin.email}</TableCell>
-                <TableCell sx={{ color: "white" }}>{admin.name}</TableCell>
-                <TableCell sx={{ color: "white" }}>{admin.role.replace("_", " ")}</TableCell>
+                <TableCell sx={{ color: "white" }}>{admin?.email}</TableCell>
+                <TableCell sx={{ color: "white" }}>{admin?.name}</TableCell>
+                <TableCell sx={{ color: "white" }}>{admin?.role}</TableCell>
                 <TableCell>
                   <span
                     style={{
-                      backgroundColor: admin.status === "ACTIVE" ? "#E6F7E6" : "#4a4d52",
-                      color: admin.status === "ACTIVE" ? "#2E7D32" : "#d5d7da",
+                      backgroundColor: admin?.status === "active" ? "#E6F7E6" : "#4a4d52",
+                      color: admin?.status === "active" ? "#2E7D32" : "#d5d7da",
                       padding: "5px 15px",
                       borderRadius: 20,
                       fontWeight: 600,
                       fontSize: 13,
                     }}
                   >
-                    {admin.status}
+                    {admin?.status}
                   </span>
                 </TableCell>
-                <TableCell sx={{ color: "white" }}>{admin.joinDate}</TableCell>
                 <TableCell>
-                  <Box sx={{ display: "flex", justifyContent: "center", gap: 10 }}>
-                    <IoEyeOutline
-                      size={20}
-                      className="text-blue-400 cursor-pointer"
-                      onClick={() => { setSelectedAdmin(admin);  }}
-                    />
-                    <IconButton onClick={() => handleUpdateStatus(admin)}>
-                      {admin.status === "ACTIVE" ? <LockOpenIcon color="success" /> : <LockIcon color="error" />}
-                    </IconButton>
+                  <Box sx={{ display: "flex", justifyContent: "start", alignItems: "center", gap:2 }}>                    
                     <FaTrashAlt
                       size={18}
                       className="text-red-500 cursor-pointer"
@@ -154,7 +131,7 @@ const AdminList: React.FC = () => {
                   </Box>
                 </TableCell>
               </StyledRow>
-            ))}
+            )) : <p>No data</p>}
           </TableBody>
         </Table>
       </TableContainer>

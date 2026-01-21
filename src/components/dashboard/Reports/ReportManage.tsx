@@ -55,6 +55,8 @@ const ReportManage = () => {
     const [deleteReport] = useDeleteReportMutation()
     const [actionReport] = useActionReportMutation()
 
+    console.log("reportsData", reportsData);
+    
     useEffect(() => {        
         refetch();
     }, [searchTerm, refetch]);
@@ -71,20 +73,6 @@ const ReportManage = () => {
         setCurrentPage(newPage);
         updateSearchParams({ page: newPage });
     };
-
-
-    //   const handleDeleteReport = async () => {
-    //     try {
-    //       await deleteReport(selectedReport._id).unwrap();
-    //       toast.success("Report deleted successfully");
-    //       refetch();
-    //       setSelectedReport(null);
-    //       setOpenConfirmModal(false);
-    //     } catch (error) {
-    //       console.log("delete error", error);
-    //       toast.error(error?.data?.message || "Failed to delete report");
-    //     }
-    //   };
 
     const getStatusColor = (status: any) => {
         switch (status) {
@@ -232,7 +220,7 @@ const ReportManage = () => {
                         <StyledRow>
                             <StyledHeadCell>Reporter</StyledHeadCell>
                             <StyledHeadCell>Reported User</StyledHeadCell>
-                            <StyledHeadCell>Campaign ID</StyledHeadCell>
+                            <StyledHeadCell>Campaign Name</StyledHeadCell>
                             <StyledHeadCell>Reason</StyledHeadCell>
                             <StyledHeadCell>Report Count</StyledHeadCell>
                             <StyledHeadCell>Date</StyledHeadCell>
@@ -291,7 +279,7 @@ const ReportManage = () => {
                                             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                                                 <FaFlag size={14} color="#ff6b35" />
                                                 <span style={{ fontSize: 13, fontFamily: "monospace" }}>
-                                                    {report.campaignId?.substring(0, 8)}...
+                                                    {report.campaignId?.title}
                                                 </span>
                                             </Box>
                                         </TableCell>
