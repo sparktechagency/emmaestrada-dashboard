@@ -6,10 +6,10 @@ export const baseApi = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
  
-    baseUrl: "http://10.10.7.48:5000/api/v1",    
+    // baseUrl: "http://10.10.7.48:5000/api/v1",    
     // baseUrl: "https://rakibur5000.binarybards.online/api/v1",    
 
-    // baseUrl: "https://api.wesound.app/api/v1",    
+    baseUrl: "https://api.wesound.app/api/v1",    
     prepareHeaders: (headers) => {
       // headers.set("ngrok-skip-browser-warning", "true");
       const token = Cookies.get("accessToken");
@@ -24,7 +24,7 @@ export const baseApi = createApi({
   tagTypes: ["user", "notifications", "admin", "category", "slider", "faqs", "withdrawal", "planner"],
 });
 
-// export const imageUrl = "https://api.wesound.app";
+export const imageUrl = "https://api.wesound.app";
 
-export const imageUrl = "http://10.10.7.48:5000";
+// export const imageUrl = "http://10.10.7.48:5000";
 // export const imageUrl = "https://rakibur5000.binarybards.online";
