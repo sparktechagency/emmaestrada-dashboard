@@ -7,8 +7,8 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
-    // host: "72.62.176.14",        
-    host: "10.10.7.46",        
+    host: "72.62.176.14",        
+    // host: "10.10.7.46",        
     port: 3010,
     allowedHosts: [
       'dashboard.wesound.app',
