@@ -3,22 +3,23 @@ import { Button } from "@mui/material";
 import JoditEditor from "jodit-react";
 import React, { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { useAddDisclaimerMutation, useGetTermsConditionQuery } from "../../../redux/features/setting/settingApi";
+import { useAddDisclaimerMutation, useGetPrivacyPolicyQuery  } from "../../../redux/features/setting/settingApi";
 
 
-const TermsCondition = () => {
+const PrivacyPolicy = () => {
   const editor = useRef(null);
   const [content, setContent] = useState(initialContent || "");
   const [showEditor, setShowEditor] = useState(false);
-  const {data: termsData} = useGetTermsConditionQuery({})
+  const {data: privacyData} = useGetPrivacyPolicyQuery({})
 
 const [addDisclaimer] = useAddDisclaimerMutation();
 
+
   useEffect(()=>{
-    if(termsData){
-      setContent(termsData)
+    if(privacyData){
+      setContent(privacyData)
     }
-  },[termsData])
+  },[privacyData])
 
   
   const handleSubmit = async () => {
@@ -32,7 +33,7 @@ const [addDisclaimer] = useAddDisclaimerMutation();
      }
  
      try {
-       const res = await addDisclaimer({termsOfService: content}).unwrap();
+       const res = await addDisclaimer({privacyPolicy: content}).unwrap();
          
        toast.success(res?.message);
        setShowEditor(false);
@@ -110,7 +111,7 @@ const config = React.useMemo((): any => {
   return (
     <div className="bg-cardBg h-full p-4 rounded-2xl">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl text-primary font-semibold">Term Condition</h1>
+        <h1 className="text-2xl text-primary font-semibold">Privacy Policy</h1>
         <Button
         hidden={showEditor}
           onClick={() => setShowEditor(!showEditor)}
@@ -192,7 +193,7 @@ const config = React.useMemo((): any => {
   );
 };
 
-export default TermsCondition;
+export default PrivacyPolicy;
 
 export const initialContent = `<p data-start="58" data-end="584"><span style="font-size: 18px;"><strong data-start="58" data-end="85">Welcome to Outfit Orbit</strong>, the ultimate destination where your style takes center stage. Here, we believe that fashion is about expressing yourself authentically—no filters, no edits, just raw fashion.<br data-start="261" data-end="264">
 Outfit Orbit is a social platform designed for fashion lovers who want to share their true outfits, connect with like-minded individuals, and discover endless outfit inspiration. Whether you’re into minimalist chic, streetwear, or sustainable fashion, Outfit Orbit celebrates every style, no matter how bold or subtle.</span></p>

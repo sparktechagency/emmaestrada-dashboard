@@ -24,7 +24,7 @@ const Notifications = () => {
   const [readAllNotification] = useReadAllNotificationMutation();
   const updateSearchParams = useUpdateSearchParams();
   const { page } = getSearchParams();
-  const socket = useSocket(); // Initialize socket connection
+  const socket = useSocket();
 
   useEffect(() => {
     refetch();

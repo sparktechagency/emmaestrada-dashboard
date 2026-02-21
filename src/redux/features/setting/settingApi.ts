@@ -49,7 +49,7 @@ const settingApi = baseApi.injectEndpoints({
         }),
     }),
     getPrivacyPolicy: builder.query({
-      query: () => "/disclaimer/privacy-policy",
+      query: () => "/settings?key=privacyPolicy",
       transformResponse: (res: { data: any }) => res?.data,
     }),
     addDisclaimer: builder.mutation({

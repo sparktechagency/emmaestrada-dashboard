@@ -20,7 +20,6 @@ const notificationApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ['notifications']
         })
-
     })
 })
 

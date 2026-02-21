@@ -17,19 +17,19 @@ const DashboardHeader = () => {
 
   useEffect(() => {
     if (!socket) return;
-    
+
     socket.on(`notification::${profileData?._id}`, data => {
       console.log('New notification received:', data);
       toast.info(data.title || 'New notification received');
       refetch();
     });
 
-    socket.on(`unreadCountUpdate::${profileData?._id}`, () => {      
+    socket.on(`unreadCountUpdate::${profileData?._id}`, () => {
       toast.info('New notification received');
       refetch();
     });
 
-    return ()=>{
+    return () => {
       socket.off(`notification::${profileData?._id}`);
       socket.off(`unreadCountUpdate::${profileData?._id}`);
     }

@@ -68,6 +68,7 @@ const Sidebar = () => {
                 sx={{
                   borderRadius: 1,
                   mb: 0.5,
+                  bborder: isActive ? "1px solid var(--color-primary)" : "none",
                   color: isActive ? "#fff" : "#fff",
                   bgcolor: isActive ? "var(--color-primary)" : "transparent",
                   "&:hover": {

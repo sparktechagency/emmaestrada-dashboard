@@ -10,15 +10,15 @@ import {
   Typography
 } from "@mui/material";
 import React, { useState } from "react";
-import About from "./About";
 import { ChangePassword } from "./ChangePassword";
 import FAQ from "./FAQ";
 import PersonalInformation from "./PersonalInformation";
+import PrivacyPolicy from "./PrivacyPolicy";
 import TermsCondition from "./TermsCondition";
 
 // --- Placeholder for react-icons/lucide-react, using inline SVG instead ---
 // Icon component for the list items
-const ChevronRightIcon = (props:any) => (
+const ChevronRightIcon = (props: any) => (
   <svg
     {...props}
     xmlns="http://www.w3.org/2000/svg"
@@ -40,7 +40,7 @@ const settingsItems = [
   { name: "Personal Information", key: "personal", icon: null },
   { name: "Change Password", key: "password", icon: null },
   { name: "Terms & Condition", key: "terms", icon: null },
-  // { name: "About Us", key: "about", icon: null },
+  { name: "Privacy Policy", key: "privacy", icon: null },
   { name: "FAQ", key: "faq", icon: null },
 ];
 
@@ -73,11 +73,10 @@ const SettingsPageContent = ({
               className={`
                   py-4 px-6 
                   hover:bg-gray-50 transition-colors duration-200
-                  ${
-                    selectedKey === item.key
-                      ? "bg-blue-50/50 border-l-4 border-blue-600"
-                      : ""
-                  }
+                  ${selectedKey === item.key
+                  ? "bg-blue-50/50 border-l-4 border-blue-600"
+                  : ""
+                }
                 `}
 
               // Style the selected state to match the image's light blue background
@@ -130,29 +129,27 @@ const Settings = () => {
     // We use a Box to simulate the main content background
     <Box className=" h-full">
       {open ? <Box className="">
-        <h1 onClick={()=>setOpen(!open)} className="cursor-pointer text-lg font-medium mb-5 text-white/70"><span><ArrowLeftOutlined /> </span> Back</h1>
+        <h1 onClick={() => setOpen(!open)} className="cursor-pointer text-lg font-medium mb-5 text-white/70"><span><ArrowLeftOutlined /> </span> Back</h1>
 
         {selectedKey == "personal" ? (
           <PersonalInformation />
         ) : selectedKey == "password" ? (
           <ChangePassword />
-        ) : selectedKey == "terms" ? (
-          <TermsCondition />
-        ) : selectedKey == "about" ? (
-          <About />
+        ) : selectedKey == "terms" ? (<TermsCondition />) : selectedKey == "privacy" ? (
+          <PrivacyPolicy />
         ) : selectedKey == "faq" ? (
           <FAQ />
         ) : (
           ""
         )}
       </Box> :
-      <SettingsPageContent
-        items={settingsItems}
-        selectedKey={selectedKey}
-        handleSelect={handleItemClick}
-      />
+        <SettingsPageContent
+          items={settingsItems}
+          selectedKey={selectedKey}
+          handleSelect={handleItemClick}
+        />
       }
-      
+
     </Box>
   );
 };
